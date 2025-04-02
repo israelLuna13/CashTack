@@ -1,17 +1,17 @@
 {
     "compilerOptions": {
-        "outDir": "./dist",
-        "rootDir": "./src",
-        "lib": ["esnext"],
-        "target": "ESNext",
-        "moduleResolution": "NodeNext",
-        "module": "NodeNext",
-        "strict": false,
-        "sourceMap": true,
-        "esModuleInterop": true,
-        "declaration": true,
-        "experimentalDecorators": true,
-        "emitDecoratorMetadata": true,
+        "outDir": "./dist",                   // Carpeta donde se generarán los archivos compilados (JS).
+        "rootDir": "./src",                   // Carpeta donde se encuentran los archivos fuente (TS).
+        "lib": ["esnext"],                    // Versiones de ECMAScript compatibles con el proyecto.
+        "target": "ESNext",                   // Versión de ECMAScript a la que se transpilará el código.
+        "moduleResolution": "NodeNext",       // Método para resolver módulos (modo compatible con Node.js ESNext).
+        "module": "NodeNext",                 // Tipo de módulo a usar en la compilación (ESM para Node.js).
+        "strict": false,                      // Desactiva todas las reglas estrictas de TypeScript.
+        "sourceMap": true,                    // Genera mapas de fuente para depuración en navegadores o Node.js.
+        "esModuleInterop": true,              // Habilita interoperabilidad entre módulos CommonJS y ES Modules.
+        "declaration": true,                  // Genera archivos `.d.ts` con definiciones de tipos para el código compilado.
+        "experimentalDecorators": true,       // Habilita el uso de decoradores (útil para TypeORM, NestJS, etc.).
+        "emitDecoratorMetadata": true         // Genera metadatos de tipo para los decoradores (necesario en NestJS, TypeORM).
     },
-    "include": ["src/**/*.ts"]
+    "include": ["src/**/*.ts"]                // Especifica los archivos a incluir en la compilación (todos los .ts dentro de src).
 }

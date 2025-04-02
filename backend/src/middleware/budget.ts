@@ -65,11 +65,11 @@ export const validateBudgetInput= async(req: Request, res: Response, next: NextF
       .run(req);
 
     //catch posibility errors
-    let errors = validationResult(req)
+    // let errors = validationResult(req)
 
-    if(!errors.isEmpty()){
-        res.status(400).json({errors:errors.array()})
-        return
-    }
+    // if(!errors.isEmpty()){
+    //     res.status(400).json({errors:errors.array()})
+    //     return
+    // }
     next()
 }

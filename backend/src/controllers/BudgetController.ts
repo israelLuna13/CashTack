@@ -1,6 +1,10 @@
 import type {Request,Response} from "express"
 import Budget from "../models/Budget";
+import Expense from "../models/Expense";
+//ALL VALIDATION OF PARAMS AND BODY VALIDATION IS IN THE MIDDLEWARE
+
 export class BudgetController{
+
     static getAll = async (req:Request,res:Response)=>{
         try {
             //TODO: validate if there aren't budgets
@@ -24,17 +28,10 @@ export class BudgetController{
     }
 
     static createBudget = async (req:Request,res:Response)=>{
-             //TODO: validate amount
-        const {amount} = req.body
-        if(amount > 0){
-            const error = new Error('The amount is not valid')
-            res.status(500).json({error:error.message})
-            return
-        }
        try {
             const bubdget = new Budget(req.body)// instance model
             await bubdget.save()
-            res.status(201).json('Presupuesto created successfully')
+            res.status(201).json('Budget created successfully')
 
        } catch (error) {
           //console.log(error);
@@ -63,19 +60,22 @@ export class BudgetController{
     //    }
 
     //the budget is in the request
-        res.json(req.budget)
+    //get the budget with all their expenses
+    const budget = await Budget.findByPk(req.budget.id,{
+        include:[Expense]
+    })
+
+        res.json(budget)
     }
 
     static editBudgetByID = async (req:Request,res:Response)=>{
-    //the code that would be here, we set the code in the middleware
         //the budget is in the request
         const {budget} = req
         await budget.update(req.body)
-        res.json("Presupuesto updated successfully")
+        res.json("Budget updated successfully")
     }
 
     static deleteBudgetByID = async (req:Request,res:Response)=>{
-         //the code that would be here, we set the code in the middleware
     //the budget is in the request
         const {budget} = req
         await budget.destroy()
