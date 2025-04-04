@@ -29,4 +29,29 @@ export class AuthController{
             
         }
     }
+
+    static confirmAccount = async (req:Request,res:Response)=>{
+
+       const {token}=req.body
+       try {
+        const existUserWithToken = await User.findOne({where:{token:token}})
+        if(!existUserWithToken)
+        {
+            const error = new Error('The token does not exist')
+            res.status(409).json({error:error.message})
+            return
+        }
+
+        existUserWithToken.confirmed = true
+        existUserWithToken.token=null
+        await existUserWithToken.save()
+        res.send('User confirmed successfully')
+        
+       } catch (error) {
+         // console.log(error);
+         res.status(500).json({error:'There is error'})
+       }
+        
+    }
+
 }

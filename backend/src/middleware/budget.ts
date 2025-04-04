@@ -64,7 +64,6 @@ export const validateBudgetInput= async(req: Request, res: Response, next: NextF
       .withMessage("The budget most be over 0")
       .run(req);
 
-    //catch posibility errors
     // let errors = validationResult(req)
 
     // if(!errors.isEmpty()){
