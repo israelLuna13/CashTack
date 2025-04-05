@@ -1,19 +1,22 @@
 import { Router } from "express";
 import { BudgetController } from "../controllers/BudgetController";
 // import { handleInputsErrors } from "../middleware/validation";
-import { validateBudgetExist, validateBudgetId, validateBudgetInput } from "../middleware/budget";
+import { HasAcces, validateBudgetExist, validateBudgetId, validateBudgetInput } from "../middleware/budget";
 import { ExpensesController } from "../controllers/ExpenseController";
 import { validateExpenseExist, validateExpenseId, validateExpenseInput } from "../middleware/expense";
 import { handleInputsErrors } from "../middleware/validation";
+import { authenticate } from "../middleware/auth";
  const router = Router()
 
 // ALL ROUTES HAVE MIDDLWARE WITH CODE THTA WOULD MOST IN THE CONTROLLER, THIS DID TO REDUCER CODE IN THE CONTROLLER
 
- export default router
+ router.use(authenticate)
 //---------------------------------------------------------------------
  //we add the next middleware to routes that has the id called budgetId
  router.param('budgetId',validateBudgetId)
  router.param('budgetId',validateBudgetExist)
+
+ router.param('budgetId',HasAcces)// this middleware need data of authenticate and validateBudgetExist
 
 //---------------------------------------------------------------------
 
@@ -42,3 +45,5 @@ import { handleInputsErrors } from "../middleware/validation";
  router.put("/:budgetId/expenses/:expenseId",validateExpenseInput,handleInputsErrors,ExpensesController.editExpenseById)
  
  router.delete("/:budgetId/expenses/:expenseId",ExpensesController.deleteExpenseById)
+
+ export default router

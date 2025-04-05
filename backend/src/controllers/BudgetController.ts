@@ -12,13 +12,11 @@ export class BudgetController{
                 order:[
                     ['createdAt','DESC']
                 ],
-                //TODO: filter by auth user
                 // limit:1,
 
-                // where:{
-                //     name:'food'
-
-                // }
+                where:{
+                    userId:req.userExist.id
+                }
             })
             res.json(budgets)
         } catch (error) {
@@ -30,6 +28,7 @@ export class BudgetController{
     static createBudget = async (req:Request,res:Response)=>{
        try {
             const bubdget = new Budget(req.body)// instance model
+            bubdget.userId = req.userExist.id
             await bubdget.save()
             res.status(201).json('Budget created successfully')
 
@@ -41,30 +40,12 @@ export class BudgetController{
     }
 
     static getBudgetById = async (req:Request,res:Response)=>{
-
-        //the code that would be here, we set the code in the middleware
-
-    //    const {id} = req.params
-    //    try {
-    //     const budget = await Budget.findByPk(id)
-    //     if(!budget){
-    //         const error = new Error('The budget do not exist')
-    //         res.status(400).json({error:error.message})
-    //         return
-    //     }
-    //     res.json(budget)
-        
-    //    } catch (error) {
-    //       //console.log(error);
-    //       res.status(500).json({error:'There is error'})
-    //    }
-
     //the budget is in the request
     //get the budget with all their expenses
     const budget = await Budget.findByPk(req.budget.id,{
         include:[Expense]
     })
-
+   
         res.json(budget)
     }
 

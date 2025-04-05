@@ -72,3 +72,13 @@ export const validateBudgetInput= async(req: Request, res: Response, next: NextF
     // }
     next()
 }
+//middleware to check if one user has key to modify, delete , get or update data
+//if the user is the same one who created the data 
+export function HasAcces(req: Request, res: Response, next: NextFunction){
+    if(req.budget.userId !== req.userExist.id){
+        const error = new Error("Invalid action")
+        res.status(401).json({error:error.message})
+        return
+    }
+    next()
+}
