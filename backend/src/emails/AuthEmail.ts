@@ -24,4 +24,23 @@ export class AuthEmail{
         
 
     }
+
+    static sendTokenResetPassword=async (user:EmailType) =>{
+        const email = await transport.sendMail({
+          from: "CrashTaker <admin@castracker.com>",
+          to: user.email,
+          subject: "Castracker - Reset your password",
+          html: `
+            <p>Hi ${user.name}, have require reset your password in CashTracker</p>
+            <p>Follow the next link to reset password/p>
+            <a href="#">Reset passwordt</a>
+            <p>Write token: <b>${user.token}</b></p>
+                `,
+        });
+
+        console.log('EMail send',email.messageId);
+        
+        
+
+    }
 }
