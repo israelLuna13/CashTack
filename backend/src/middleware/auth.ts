@@ -1,4 +1,6 @@
 import { Request, Response, NextFunction } from 'express'
+import jwt from 'jsonwebtoken'
+
 import { body, param} from 'express-validator'
 import User from '../models/User'
 declare global{
@@ -52,7 +54,41 @@ export const validateExistUser = async(req: Request, res: Response, next: NextFu
       }
       req.userExist = userExist
       next()
-  } catch (error) {}
+  } catch (error) {
+    // console.log(error);
+    res.status(500).json({ error: "There is error" });
+  }
 
 
 }
+
+export const authenticate=async(req: Request, res: Response, next: NextFunction)=>{
+  
+  const bearer = req.headers.authorization;
+  if (!bearer) {
+    const error = new Error("Unauthorized");
+    res.status(401).json({ error: error.message });
+    return;
+  }
+
+  const [texto, token] = bearer.split(" ");
+  if (!token) {
+    const error = new Error("Incorrect token");
+    res.status(401).json({ error: error.message });
+    return;
+  }
+  try {
+    const decoed = jwt.verify(token, process.env.JWT_SECRET);
+    if (typeof decoed === "object" && decoed.id) {
+      //TODO:check if user exist
+      const user = await User.findByPk(decoed.id, {
+        attributes: ["id", "name", "email"],
+      });
+      req.userExist = user;
+      next();
+    }
+  } catch (error) {
+    // console.log(error);
+    res.status(500).json({ error: "Incorrect token" });
+  }
+};

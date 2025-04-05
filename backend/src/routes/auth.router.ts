@@ -3,7 +3,7 @@ import { body,param } from "express-validator";
 import { AuthController } from "../controllers/AuthController";
 import { handleInputsErrors } from "../middleware/validation";
 import { limiter } from "../config/limiter";
-import { validateExistToken, validateExistUser, validateToken } from "../middleware/auth";
+import { authenticate, validateExistToken, validateExistUser, validateToken } from "../middleware/auth";
 
 const router = Router()
 
@@ -70,4 +70,22 @@ body("password")
 .isLength({ min: 6 })
 .withMessage("The password is very short, most has minium 8 characters"),
 handleInputsErrors,AuthController.resetPasswordWithPassword)
+
+
+router.get('/user',authenticate,AuthController.getUSer)
+
+router.post('/update-password',authenticate
+  ,body("current_password")
+  .notEmpty()
+  .withMessage("The password is required"),
+  body("new_password")
+  .notEmpty()
+  .withMessage("The password is required")
+  .isLength({ min: 6 })
+  .withMessage("The new password is very short, most has minium 8 characters"),handleInputsErrors,AuthController.updatePassword)
+
+  router.post('/check-password',authenticate
+    ,body("current_password")
+    .notEmpty()
+    .withMessage("The password is required"),handleInputsErrors,AuthController.checkPassword)
 export default router

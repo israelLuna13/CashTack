@@ -154,4 +154,58 @@ export class AuthController {
       res.status(500).json({ error: "There is error" });
     }
   };
+
+  static getUSer = async (req: Request, res: Response) => {
+      const{userExist} = req
+      res.send(userExist)
+  };
+
+  static updatePassword = async(req: Request, res: Response)=>{
+    const { current_password, new_password } = req.body;
+    const { id } = req.userExist;
+
+    try {
+      const user = await User.findByPk(id);
+      const isCorrectPassword = await checkPassword(
+        current_password,
+        user.password
+      );
+
+      if (!isCorrectPassword) {
+        const error = new Error("Incorrect current password");
+        res.status(401).json({ error: error.message });
+        return;
+      }
+      user.password = await hashPassword(new_password);
+      await user.save();
+
+      res.json("The password has been updated");
+    } catch (error) {
+      // console.log(error);
+      res.status(500).json({ error: "There is error" });
+    }
+  }
+
+  static checkPassword = async(req: Request, res: Response)=>{
+
+    const {current_password} = req.body
+    const {id} = req.userExist
+
+    try {
+      const user = await User.findByPk(id)
+      const isCorrectPassword= await checkPassword(current_password,user.password)
+
+      if(!isCorrectPassword)
+      {
+        const error = new Error("Incorrect current password");
+        res.status(401).json({ error: error.message });
+        return;
+      }
+      res.json('The password is correct')
+    } catch (error) {
+       // console.log(error);
+       res.status(500).json({ error: "There is error" });
+    }
+
+  }
 }
