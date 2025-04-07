@@ -5,7 +5,7 @@ import Expense from "../models/Expense";
 
 export class BudgetController{
 
-    static getAll = async (req:Request,res:Response)=>{
+    static getAll = async (req:Request,res:Response)=>{        
         try {
             //TODO: validate if there aren't budgets
             const budgets = await Budget.findAll({
@@ -20,7 +20,7 @@ export class BudgetController{
             })
             res.json(budgets)
         } catch (error) {
-            //console.log(error);
+            console.log(error);
            res.status(500).json({error:'There is error'})
         }
     }
