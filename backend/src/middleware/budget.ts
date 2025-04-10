@@ -11,6 +11,7 @@ declare global {
     }
 }
 
+//TODO:MAKE TESTO TO  validateBudgetId,validateBudgetInput
 export const validateBudgetId = async(req: Request, res: Response, next: NextFunction)=>{
 
  await param("budgetId")
@@ -37,7 +38,7 @@ export const validateBudgetExist = async(req: Request, res: Response, next: Next
         const budget = await Budget.findByPk(budgetId)
         if(!budget){
             const error = new Error('The budget do not exist')
-            res.status(400).json({error:error.message})
+            res.status(404).json({error:error.message})
             return
         }
 

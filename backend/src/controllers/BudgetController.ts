@@ -27,7 +27,7 @@ export class BudgetController{
 
     static createBudget = async (req:Request,res:Response)=>{
        try {
-            const bubdget = new Budget(req.body)// instance model
+            const bubdget = await Budget.create(req.body)// instance model
             bubdget.userId = req.userExist.id
             await bubdget.save()
             res.status(201).json('Budget created successfully')
@@ -60,7 +60,7 @@ export class BudgetController{
     //the budget is in the request
         const {budget} = req
         await budget.destroy()
-        res.json("Presupuesto deleted successfully")
+        res.json("Budget deleted successfully")
     }
  
 
