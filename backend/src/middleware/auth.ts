@@ -47,6 +47,8 @@ export const validateExistUser = async(req: Request, res: Response, next: NextFu
 
   try {
     const userExist = await User.findOne({ where: { email: email } });
+    console.log(userExist);
+    
       if (!userExist) {
         const error = new Error("User does not exist");
         res.status(404).json({ error: error.message });
@@ -55,11 +57,10 @@ export const validateExistUser = async(req: Request, res: Response, next: NextFu
       req.userExist = userExist
       next()
   } catch (error) {
-    // console.log(error);
+    
+    //console.log(error); 
     res.status(500).json({ error: "There is error" });
   }
-
-
 }
 
 export const authenticate=async(req: Request, res: Response, next: NextFunction)=>{

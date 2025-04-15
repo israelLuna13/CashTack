@@ -16,12 +16,11 @@ export class AuthController {
         return;
       }
 
-      const user = new User(req.body);
+      const user = await User.create(req.body);
       user.password = await hashPassword(password);
       user.token = generateToken();
       await AuthEmail.sendConfirmationEmail({ name, email, token: user.token });
       await user.save();
-
       res.status(201).json("User created succesfully");
     } catch (error) {
       // console.log(error);
@@ -56,6 +55,7 @@ export class AuthController {
   static login = async (req: Request, res: Response) => {
     const {password } = req.body;
     const {userExist}=req
+    
     try {
       // const userExist = await User.findOne({ where: { email: email } });
       // if (!userExist) {
@@ -63,6 +63,7 @@ export class AuthController {
       //   res.status(404).json({ error: error.message });
       //   return;
       // }
+    
 
       if (!userExist.confirmed) {
         const error = new Error("You have not confirm your account");
@@ -83,7 +84,7 @@ export class AuthController {
       const jwt = generateJWT(userExist.id);
       res.json(jwt);
     } catch (error) {
-      // console.log(error);
+      console.log(error);
       res.status(500).json({ error: "There is error" });
     }
   };

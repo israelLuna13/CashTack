@@ -36,15 +36,23 @@ export const validateExpenseInput= async(req: Request, res: Response, next: Next
 
 export const validateExpenseId=async(req: Request, res: Response, next: NextFunction)=>{
 
-  await param('expenseId').isInt().custom(value => value > 0).withMessage('Id is incorrect').run(req)
+  try {
+    await param("expenseId")
+      .isInt()
+      .custom((value) => value > 0)
+      .withMessage("Id is incorrect")
+      .run(req);
 
-  let errors = validationResult(req)
-  if(!errors.isEmpty()){
-    res.status(400).json({errors:errors.array()})
-    return
+    let errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      res.status(400).json({ errors: errors.array() });
+      return;
+    }
+
+    next();
+  } catch (error) {
+    res.status(500).json({ error: "There is error" });
   }
-
-  next()
 }
 
 export const validateExpenseExist = async(req: Request, res: Response, next: NextFunction)=>{
@@ -55,7 +63,7 @@ export const validateExpenseExist = async(req: Request, res: Response, next: Nex
       const expense = await Expense.findByPk(expenseId)
       if(!expense){
           const error = new Error('The expense do not exist')
-          res.status(400).json({error:error.message})
+          res.status(404).json({error:error.message})
           return
       }
 
