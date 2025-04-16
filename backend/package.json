@@ -5,10 +5,11 @@
   "main": "index.js",
   "scripts": {
     "dev": "nodemon src/index.ts",
-    "srart": "node ./dist/index.js",
+    "start": "node ./dist/index.js",
     "build": "tsc",
     "dev:api": "nodemon src/index.ts --api",
-    "test": "jest"
+    "test": "jest",
+    "test:coverage":"jest --coverage"
   },
   "author": "israel luna",
   "license": "ISC",

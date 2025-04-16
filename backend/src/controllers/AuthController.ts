@@ -46,7 +46,7 @@ export class AuthController {
      userToken.confirmed = true;
      userToken.token = null;
       await userToken.save();
-      res.send("User confirmed successfully");
+      res.send("User successfully confirmedy");
     } catch (error) {
       // console.log(error);
       res.status(500).json({ error: "There is error" });
@@ -109,12 +109,12 @@ export class AuthController {
       });
       res.send("Check your email and follow instructions");
     } catch (error) {
-      // console.log(error);
+       console.log(error);
       res.status(500).json({ error: "There is error" });
     }
   };
 
-  static checkToken = async (req: Request, res: Response) => {
+  static checkToken =  (req: Request, res: Response) => {
     // const { token } = req.body;
 
     try {
@@ -125,7 +125,7 @@ export class AuthController {
     //     return;
     //   }
 
-      res.send("token valido");
+      res.send("correct token");
     } catch (error) {
       // console.log(error);
       res.status(500).json({ error: "There is error" });
@@ -180,7 +180,7 @@ export class AuthController {
       user.password = await hashPassword(new_password);
       await user.save();
 
-      res.json("The password has been updated");
+      res.send("The password has been updated");
     } catch (error) {
       // console.log(error);
       res.status(500).json({ error: "There is error" });
@@ -202,7 +202,7 @@ export class AuthController {
         res.status(401).json({ error: error.message });
         return;
       }
-      res.json('The password is correct')
+      res.send('The password is correct')
     } catch (error) {
        // console.log(error);
        res.status(500).json({ error: "There is error" });

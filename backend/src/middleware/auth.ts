@@ -31,7 +31,7 @@ export const validateExistToken= async(req: Request, res: Response, next: NextFu
       });
       if (!existUserWithToken) {
         const error = new Error("The token does not exist");
-        res.status(409).json({ error: error.message });
+        res.status(404).json({ error: error.message });
         return;
       }
       req.userToken = existUserWithToken

@@ -88,8 +88,6 @@ describe('AuthController.createAccount',()=>{
       expect(data).toEqual('User created succesfully')
     })
 })
-
-
 describe('AuthController.Login',()=>{
     it('Should return 403 user has not confirm their account',async()=>{
 
@@ -109,16 +107,6 @@ describe('AuthController.Login',()=>{
     })
 
     it('Should return 401 if password is incorrect',async()=>{
-
-        // const userMock = 
-        //     {
-        //       id: 9,
-        //       name: "isra2",
-        //       email: "luna2@gmail.com",
-        //       confirmed:true,
-        //       password:'123456'
-        //     }
-        //   ;
 
         const req = createRequest({
             method:'POST',
@@ -175,4 +163,512 @@ it('Should return json web token if authentication is succeful',async()=>{
     expect(generateJWT).toHaveBeenCalledTimes(1)
     expect(data).toEqual(fakeJWT)
 })
+})
+
+describe('AuthController.checkToken',()=>{
+    it('Should sent message correct token',()=>{
+
+        const req= createRequest({
+            method:'POST',
+            url:'api/auth/check-token'
+        })
+        const res = createResponse()
+        AuthController.checkToken(req,res)
+        const data = res._getData()
+        expect(res.statusCode).toBe(200)
+
+        expect(data).toBe("correct token")
+    })
+    it('Should return code 500 and message error',()=>{
+        const req= createRequest({
+            method:'POST',
+            url:'api/auth/check-token'
+        })
+        const res = createResponse()
+
+        //make error to go catch
+          // ⚠️ Sobrescribimos `res.send` para que lance un error
+        res.send = () => {
+        throw new Error("forced error");
+        };
+    
+        AuthController.checkToken(req,res)
+        const data = res._getJSONData()
+        expect(res.statusCode).toBe(500)
+        expect(data).toHaveProperty('error',"There is error")
+    })
+})
+
+describe('AuthController.getUSer',()=>{
+    it('Should return user',()=>{
+
+        const user = {
+            id: 9,
+            name: "isra2",
+            email: "luna2@gmail.com",
+          };
+    
+        const req= createRequest({
+            method:'GET',
+            url:'/api/auth/user',
+            userExist:user
+        })
+        const res = createResponse()
+        AuthController.getUSer(req,res)
+
+        const data = res._getData()
+        expect(res.statusCode).toBe(200)
+        expect(data).toBe(user)
+    })
+})
+
+describe('AuthController.confirmAccount',()=>{
+    it('Should return code 200 and message',async()=>{
+
+        const userMock = {
+            confirmed:true,
+            token:null
+            ,
+            save:jest.fn()
+        }
+        const req= createRequest({
+            method:'POST',
+            url:'/api/auth/confirm-account',
+            userToken:userMock
+        })
+        const res = createResponse();
+        (userMock.save as jest.Mock).mockResolvedValue(true)
+        await AuthController.confirmAccount(req,res)
+
+        const data = res._getData()
+        expect(res.statusCode).toBe(200)
+        expect(userMock.save).toHaveBeenCalled()
+        expect(userMock.save).toHaveBeenCalledTimes(1)
+        expect(data).toBe('User successfully confirmedy')
+    })
+
+    it('Should return code 500 and error message',async ()=>{
+
+               
+
+        const userMock = {
+            confirmed:true,
+            token:null
+            ,
+            save:jest.fn()
+        };
+        (userMock.save as jest.Mock).mockRejectedValue(new Error)
+
+        const req= createRequest({
+            method:'POST',
+            url:'/api/auth/confirm-account',
+            userToken:userMock
+        })
+        const res = createResponse();
+         await AuthController.confirmAccount(req,res)
+
+        const data = res._getJSONData()
+        expect(res.statusCode).toBe(500)
+        expect(data).toHaveProperty('error','There is error')
+    })
+
+
+})
+
+describe('AuthController.forgotPassword',()=>{
+    it('Should return code 200 and message',async()=>{
+
+        const userMock = {
+            name:'test',
+            confirmed:true,
+            token:'123456'
+            ,
+            save:jest.fn()
+        }
+        const tokenFake = 'fake_token'
+
+        const req= createRequest({
+            method:'POST',
+            url:'/api/auth/forgot-password',
+            userExist:userMock,
+            body:{
+                email:'test@gmail.com'
+            }
+        })
+        const res = createResponse();
+
+        (generateToken as jest.Mock).mockReturnValue(tokenFake);
+        (userMock.save as jest.Mock).mockResolvedValue(true)
+
+        jest.spyOn(AuthEmail,'sendTokenResetPassword').mockImplementation(()=> Promise.resolve());
+
+        await AuthController.forgotPassword(req,res)
+
+        const data = res._getData()
+        expect(res.statusCode).toBe(200)
+        expect(userMock.save).toHaveBeenCalled()
+        expect(userMock.save).toHaveBeenCalledTimes(1)
+        expect(req.userExist.token).toBe(tokenFake)
+        expect(AuthEmail.sendTokenResetPassword).toHaveBeenCalledTimes(1)
+        expect(AuthEmail.sendTokenResetPassword).toHaveBeenCalledWith({
+            name:userMock.name,
+            email:req.body.email,
+            token:userMock.token
+        })
+        expect(data).toBe('Check your email and follow instructions')
+    })
+
+
+    it('Should return code 500 and error message',async()=>{
+
+        const userMock = {
+            name:'test',
+            confirmed:true,
+            token:'123456'
+            ,
+            save:jest.fn()
+        }
+        const tokenFake = 'fake_token'
+
+        const req= createRequest({
+            method:'POST',
+            url:'/api/auth/forgot-password',
+            userExist:userMock,
+            body:{
+                email:'test@gmail.com'
+            }
+        })
+        const res = createResponse();
+
+        (generateToken as jest.Mock).mockReturnValue(tokenFake);
+        (userMock.save as jest.Mock).mockRejectedValue(new Error)
+
+        jest.spyOn(AuthEmail,'sendTokenResetPassword').mockImplementation(()=> Promise.resolve());
+
+        await AuthController.forgotPassword(req,res)
+
+        const data = res._getJSONData()
+        expect(res.statusCode).toBe(500)
+        expect(userMock.save).toHaveBeenCalled()
+        expect(userMock.save).toHaveBeenCalledTimes(1)
+        expect(data).toHaveProperty('error','There is error')
+    })
+
+})
+
+describe('AuthController.resetPasswordWithPassword',()=>{
+
+    beforeEach(()=>{
+        jest.resetAllMocks()
+    })
+
+    it('Should return status 200 and message',async()=>{
+        const userMock = {
+            name:'test',
+            confirmed:true,
+            token:'123456'
+            ,
+            save:jest.fn()
+        };
+
+        (User.findOne as jest.Mock).mockResolvedValue(userMock)
+
+        const req = createRequest({
+            method:'POST',
+            url:'/api/auth/reset-password/:token',
+            params:{token:'123456'},
+            body:{
+                password:'123456'
+            }
+        });
+        const res = createResponse();
+        (hashPassword as jest.Mock).mockResolvedValue(true);
+        (userMock.save as jest.Mock).mockResolvedValue(true);
+        await AuthController.resetPasswordWithPassword(req,res)
+
+        const data = res._getData()
+        expect(res.statusCode).toBe(200)
+        expect(data).toBe("The password has been updated")
+        expect(User.findOne).toHaveBeenCalled()
+        expect(User.findOne).toHaveBeenCalledTimes(1)
+        expect(hashPassword).toHaveBeenCalledWith(req.body.password)
+        expect(userMock.save).toHaveBeenCalled()
+        expect(userMock.save).toHaveBeenCalledTimes(1)
+    })
+
+
+    it('Should return status 404 and error message',async()=>{
+        const userMock = {
+            name:'test',
+            confirmed:true,
+            token:'123456'
+            ,
+            save:jest.fn()
+        };
+
+        (User.findOne as jest.Mock).mockResolvedValue(false)
+
+        const req = createRequest({
+            method:'POST',
+            url:'/api/auth/reset-password/:token',
+            params:{token:'123456'},
+            body:{
+                password:'123456'
+            }
+        });
+        const res = createResponse();
+       
+        await AuthController.resetPasswordWithPassword(req,res)
+
+        const data = res._getJSONData()
+        expect(res.statusCode).toBe(404)
+        expect(data).toHaveProperty("error","Incorrect token")
+        expect(User.findOne).toHaveBeenCalled()
+        expect(User.findOne).toHaveBeenCalledTimes(1)
+        expect(userMock.save).not.toHaveBeenCalled()
+    })
+
+    it("Should return status 500 and error message", async () => {
+      const userMock = {
+        name: "test",
+        confirmed: true,
+        token: "123456",
+        save: jest.fn(),
+      };
+
+      (User.findOne as jest.Mock).mockResolvedValue(userMock);
+
+      const req = createRequest({
+        method: "POST",
+        url: "/api/auth/reset-password/:token",
+        params: { token: "123456" },
+        body: {
+          password: "123456",
+        },
+      });
+      const res = createResponse();
+      (hashPassword as jest.Mock).mockResolvedValue(true);
+      (userMock.save as jest.Mock).mockRejectedValue(new Error());
+      await AuthController.resetPasswordWithPassword(req, res);
+
+      const data = res._getJSONData();
+      expect(res.statusCode).toBe(500);
+      expect(data).toHaveProperty("error", "There is error");
+      expect(User.findOne).toHaveBeenCalled();
+      expect(User.findOne).toHaveBeenCalledTimes(1);
+      expect(hashPassword).toHaveBeenCalledWith(req.body.password);
+      expect(userMock.save).toHaveBeenCalled();
+      expect(userMock.save).toHaveBeenCalledTimes(1);
+    });
+})
+
+describe('AuthController.checkPassword',()=>{
+    beforeEach(()=>{
+        jest.resetAllMocks()
+    })
+
+   
+    it('Should  return status 200 and message',async()=>{
+        const userMock = {
+            name:'test',
+            confirmed:true,
+            token:'123456',
+            password:'123456'
+        };
+        (User.findByPk as jest.Mock).mockResolvedValue(userMock)
+
+        const req = createRequest({
+            method:'POST',
+            url:'api/auth/check-password',
+            body:{
+                current_password:'123456'
+            },
+            userExist:{id:1}
+
+        });
+        const res = createResponse();
+        ( checkPassword as jest.Mock).mockResolvedValue(true);
+        await AuthController.checkPassword(req,res)
+
+        const data = res._getData()
+
+        expect(res.statusCode).toBe(200)
+        expect(data).toBe('The password is correct')
+        expect(User.findByPk).toHaveBeenCalled() 
+        expect(User.findByPk).toHaveBeenCalledTimes(1) 
+        expect(checkPassword).toHaveBeenCalledWith(req.body.current_password,userMock.password) 
+
+    })
+
+    it('Should  return status 401 and error message',async()=>{
+        const userMock = {
+            name:'test',
+            confirmed:true,
+            token:'123456',
+            password:'123456'
+        };
+        (User.findByPk as jest.Mock).mockResolvedValue(userMock)
+
+        const req = createRequest({
+            method:'POST',
+            url:'api/auth/check-password',
+            body:{
+                current_password:'123456'
+            },
+            userExist:{id:1}
+
+        });
+        const res = createResponse();
+        ( checkPassword as jest.Mock).mockResolvedValue(false);
+        await AuthController.checkPassword(req,res)
+
+        const data = res._getJSONData()
+
+        expect(res.statusCode).toBe(401)
+        expect(data).toHaveProperty('error','Incorrect current password')
+        expect(User.findByPk).toHaveBeenCalled() 
+        expect(User.findByPk).toHaveBeenCalledTimes(1) 
+        expect(checkPassword).toHaveBeenCalledWith(req.body.current_password,userMock.password) 
+    })
+
+    it('Should  return status 500 and error message by error on findByPk',async()=>{
+      
+        (User.findByPk as jest.Mock).mockRejectedValue(new Error)
+
+        const req = createRequest({
+            method:'POST',
+            url:'api/auth/check-password',
+            body:{
+                current_password:'123456'
+            },
+            userExist:{id:1}
+
+        });
+        const res = createResponse();
+        await AuthController.checkPassword(req,res)
+
+        const data = res._getJSONData()
+
+        expect(res.statusCode).toBe(500)
+        expect(data).toHaveProperty('error','There is error')
+        expect(User.findByPk).toHaveBeenCalled() 
+        expect(User.findByPk).toHaveBeenCalledTimes(1) 
+    })
+})
+
+
+describe('AuthController.updatePassword',()=>{
+    beforeEach(()=>{
+        jest.resetAllMocks()
+    })
+    it('Should return status 200 and message',async()=>{
+
+  const userMock = {
+            name:'test',
+            confirmed:true,
+            token:'123456',
+            password:'123456',
+            save:jest.fn()
+        };
+        (User.findByPk as jest.Mock).mockResolvedValue(userMock)
+
+        const req = createRequest({
+            method:'POST',
+            url:'api/auth/update-password',
+            body:{
+                current_password:'123456',
+                new_password:'123456'
+            },
+            userExist:{id:1}
+
+        });
+        const res = createResponse();
+        ( checkPassword as jest.Mock).mockResolvedValue(true);
+        (hashPassword as jest.Mock).mockResolvedValue(req.body.new_password);
+        (userMock.save as jest.Mock).mockResolvedValue(true)
+        await AuthController.updatePassword(req,res);
+
+        const data = res._getData()
+
+        expect(res.statusCode).toBe(200)
+        expect(data).toBe('The password has been updated')
+        expect(userMock.save).toHaveBeenCalled() 
+        expect(userMock.save).toHaveBeenCalledTimes(1) 
+        expect(User.findByPk).toHaveBeenCalled() 
+        expect(User.findByPk).toHaveBeenCalledTimes(1) 
+        expect(checkPassword).toHaveBeenCalledWith(req.body.current_password,userMock.password) 
+        expect(userMock.password).toEqual(req.body.new_password)
+
+    })
+
+
+
+    it('Should return status 404 and message incorrect password',async()=>{
+
+        const userMock = {
+                  name:'test',
+                  confirmed:true,
+                  token:'123456',
+                  password:'123456',
+                  save:jest.fn()
+              };
+              (User.findByPk as jest.Mock).mockResolvedValue(userMock)
+      
+              const req = createRequest({
+                  method:'POST',
+                  url:'api/auth/update-password',
+                  body:{
+                      current_password:'123456',
+                      new_password:'123456'
+                  },
+                  userExist:{id:1}
+      
+              });
+              const res = createResponse();
+              ( checkPassword as jest.Mock).mockResolvedValue(false);
+              
+              await AuthController.updatePassword(req,res);
+      
+              const data = res._getJSONData()
+      
+              expect(res.statusCode).toBe(401)
+              expect(data).toHaveProperty('error','Incorrect current password')
+              expect(userMock.save).not.toHaveBeenCalled() 
+              expect(User.findByPk).toHaveBeenCalled() 
+              expect(User.findByPk).toHaveBeenCalledTimes(1) 
+              expect(checkPassword).toHaveBeenCalledWith(req.body.current_password,userMock.password) 
+      
+          })
+
+          it("Should return status 500 and error message by error on findByPk", async () => {
+            const userMock = {
+              name: "test",
+              confirmed: true,
+              token: "123456",
+              password: "123456",
+              save: jest.fn(),
+            };
+            (User.findByPk as jest.Mock).mockRejectedValue(new Error());
+
+            const req = createRequest({
+              method: "POST",
+              url: "api/auth/update-password",
+              body: {
+                current_password: "123456",
+                new_password: "123456",
+              },
+              userExist: { id: 1 },
+            });
+            const res = createResponse();
+
+            await AuthController.updatePassword(req, res);
+
+            const data = res._getJSONData();
+
+            expect(res.statusCode).toBe(500);
+            expect(data).toHaveProperty("error", "There is error");
+            expect(userMock.save).not.toHaveBeenCalled();
+            expect(User.findByPk).toHaveBeenCalled();
+            expect(User.findByPk).toHaveBeenCalledTimes(1);
+          });
 })
