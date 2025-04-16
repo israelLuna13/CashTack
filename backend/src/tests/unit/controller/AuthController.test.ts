@@ -87,6 +87,36 @@ describe('AuthController.createAccount',()=>{
       expect(res.statusCode).toBe(201)
       expect(data).toEqual('User created succesfully')
     })
+
+    it('Should return code 500 and error message by User.create',async()=>{
+
+        const req = createRequest({
+            method:'POST',
+            url:"/api/auth/create-account",
+            body:{
+                email:'test@gmail.com',
+                password:'123456',
+                name:'test'
+            }
+        })
+
+        const mockUser = {...req.body,save:jest.fn()};
+
+        (User.create as jest.Mock).mockRejectedValue(new Error);
+
+        const res = createResponse();
+
+
+      await AuthController.createAccount(req,res)
+      const data = res._getJSONData()
+
+      expect(User.create).toHaveBeenCalled()
+      expect(User.create).toHaveBeenCalledTimes(1)
+      expect(mockUser.save).not.toHaveBeenCalled()
+      expect(res.statusCode).toBe(500)
+      expect(data).toHaveProperty('error','There is error')
+
+    })
 })
 describe('AuthController.Login',()=>{
     it('Should return 403 user has not confirm their account',async()=>{
