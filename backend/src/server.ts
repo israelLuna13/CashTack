@@ -6,7 +6,7 @@ import routerAuth from './routes/auth.router'
 
 const app = express()
 
-connectDB()
+ connectDB()
 
 app.use(morgan('dev'))
 
@@ -14,5 +14,6 @@ app.use(express.json())
 
 app.use('/api/budgets',routerBudget)
 app.use('/api/auth',routerAuth)
+
 
 export default app

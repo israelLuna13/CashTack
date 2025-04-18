@@ -19,7 +19,7 @@ export class AuthEmail{
                 `,
         });
 
-        console.log('EMail send',email.messageId);
+        // console.log('EMail send',email.messageId);
         
         
 
@@ -38,7 +38,7 @@ export class AuthEmail{
                 `,
         });
 
-        console.log('EMail send',email.messageId);
+        // console.log('EMail send',email.messageId);
         
         
 
