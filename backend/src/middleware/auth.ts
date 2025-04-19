@@ -14,7 +14,6 @@ declare global{
 export const validateToken = async(req: Request, res: Response, next: NextFunction)=>{
 
     await body("token")
-    .notEmpty()
     .isLength({ min: 6 })
     .withMessage("Token is required").run(req)
 
@@ -47,7 +46,7 @@ export const validateExistUser = async(req: Request, res: Response, next: NextFu
 
   try {
     const userExist = await User.findOne({ where: { email: email } });
-    console.log(userExist);
+    //console.log(userExist);
     
       if (!userExist) {
         const error = new Error("User does not exist");

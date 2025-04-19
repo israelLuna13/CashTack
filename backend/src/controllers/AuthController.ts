@@ -18,9 +18,18 @@ export class AuthController {
 
       const user = await User.create(req.body);
       user.password = await hashPassword(password);
-      user.token = generateToken();
-      await AuthEmail.sendConfirmationEmail({ name, email, token: user.token });
+
+      const token = user.token = generateToken();
+
+      //saved token in the global object to doing integration test before token be deleted
+      if(process.env.NODE_ENV !== 'production')
+      {
+        globalThis.cashTrackerConfirmationToken = token
+      }
+      user.token = token
       await user.save();
+
+      await AuthEmail.sendConfirmationEmail({ name, email, token: user.token });
       res.status(201).json("User created succesfully");
     } catch (error) {
       // console.log(error);
@@ -84,7 +93,7 @@ export class AuthController {
       const jwt = generateJWT(userExist.id);
       res.json(jwt);
     } catch (error) {
-      console.log(error);
+      //console.log(error);
       res.status(500).json({ error: "There is error" });
     }
   };
@@ -109,7 +118,7 @@ export class AuthController {
       });
       res.send("Check your email and follow instructions");
     } catch (error) {
-       console.log(error);
+      // console.log(error);
       res.status(500).json({ error: "There is error" });
     }
   };

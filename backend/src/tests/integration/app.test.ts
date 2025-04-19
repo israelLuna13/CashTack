@@ -1,7 +1,12 @@
 import request from "supertest";
 import server from "../../server";
 import { AuthController } from "../../controllers/AuthController";
+import { connectDB } from "../../config/connectionDatabse";
+
 describe("Authentitacion.createAccount", () => {
+  beforeAll(async () => {
+    await connectDB();
+  });
   it("Should display validation errors when form is empty", async () => {
     const response = await request(server)
       .post("/api/auth/create-account")
@@ -86,5 +91,42 @@ describe("Authentitacion.createAccount", () => {
     expect(response.status).not.toBe(400);
     expect(response.status).not.toBe(201);
     expect(response.body).not.toHaveProperty("errors");
+  });
+});
+
+describe("Authentication.confirmAccount", () => {
+  it("Should return display error if token is empty", async () => {
+    const response = await request(server)
+      .post("/api/auth/confirm-account")
+      .send({
+        token: ""
+      });
+
+    expect(response.status).toBe(400);
+    expect(response.body.errors).toHaveLength(1);
+    expect(response.body).toHaveProperty("errors");
+    expect(response.body.errors[0].msg).toBe("Token is required");
+  });
+  it("Should return display error if token is invalid", async () => {
+    const response = await request(server)
+      .post("/api/auth/confirm-account")
+      .send({
+        token: "not_valid",
+      });
+
+    expect(response.status).toBe(404);
+    expect(response.body).toHaveProperty("error", "The token does not exist");
+  });
+
+  it("should confirm account when token is correct", async () => {
+    //take token from controller before data of database beening deleted
+    const token = globalThis.cashTrackerConfirmationToken;
+    const response = await request(server)
+      .post("/api/auth/confirm-account")
+      .send({
+        token,
+      });
+    expect(response.status).toBe(200);
+    expect(response.text).toEqual("User successfully confirmedy");
   });
 });
