@@ -5,7 +5,7 @@ import { connectDB } from "../../config/connectionDatabse";
 import User from "../../models/User";
 import * as authUtils from "../../helper/auth";
 
-import * as jwtUtilis from "../../helper/jtw"
+import * as jwtUtilis from "../../helper/jtw";
 
 describe("Authentitacion.createAccount", () => {
   beforeAll(async () => {
@@ -103,7 +103,7 @@ describe("Authentication.confirmAccount", () => {
     const response = await request(server)
       .post("/api/auth/confirm-account")
       .send({
-        token: ""
+        token: "",
       });
 
     expect(response.status).toBe(400);
@@ -135,44 +135,39 @@ describe("Authentication.confirmAccount", () => {
   });
 });
 
-describe('AUthentication',()=>{
-  beforeEach(()=>{
-    jest.clearAllMocks()
-  })
-  it('Should display validation error when the form is empty',async()=>{
+describe("AUthentication.login", () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+  it("Should display validation error when the form is empty", async () => {
+    const response = await request(server).post("/api/auth/login").send({});
+    const mocklogin = jest.spyOn(AuthController, "login");
 
-    const response = await request(server).post('/api/auth/login').send({})
-    const mocklogin = jest.spyOn(AuthController,'login')
+    expect(response.status).toBe(400);
+    expect(response.status).not.toBe(200);
+    expect(response.body.errors).toHaveLength(2);
+    expect(response.body).toHaveProperty("errors");
+    expect(mocklogin).not.toHaveBeenCalled();
+  });
 
-    expect(response.status).toBe(400)
-    expect(response.status).not.toBe(200)
-    expect(response.body.errors).toHaveLength(2)
-    expect(response.body).toHaveProperty('errors')
-    expect(mocklogin).not.toHaveBeenCalled()
+  it("Should return 400 bad request when the email is invalid", async () => {
+    const response = await request(server).post("/api/auth/login").send({
+      password: "test123",
+      email: "not_valid",
+    });
+    const mocklogin = jest.spyOn(AuthController, "login");
 
-  })
-
-
-  it('Should return 400 bad request when the email is invalid',async()=>{
-
-    const response = await request(server).post('/api/auth/login').send({
-      password:'123456',
-      email:'not_valid'
-    })
-    const mocklogin = jest.spyOn(AuthController,'login')
-
-    expect(response.status).toBe(400)
-    expect(response.status).not.toBe(200)
-    expect(response.body.errors).toHaveLength(1)
-    expect(response.body.errors[0].msg).toBe('Email is not valid')
-    expect(response.body).toHaveProperty('errors')
-    expect(mocklogin).not.toHaveBeenCalled()
-
-  })
+    expect(response.status).toBe(400);
+    expect(response.status).not.toBe(200);
+    expect(response.body.errors).toHaveLength(1);
+    expect(response.body.errors[0].msg).toBe("Email is not valid");
+    expect(response.body).toHaveProperty("errors");
+    expect(mocklogin).not.toHaveBeenCalled();
+  });
 
   it("Should return 404 and display error when user does not exist in the middleware", async () => {
     const response = await request(server).post("/api/auth/login").send({
-      password: "123456",
+      password: "test123",
       email: "userNotExist@gmail.com",
     });
     const mocklogin = jest.spyOn(AuthController, "login");
@@ -183,46 +178,47 @@ describe('AUthentication',()=>{
     expect(mocklogin).not.toHaveBeenCalled();
   });
 
-
   it("Should return 403 and display error when account is not confirmed with mock", async () => {
-
-    (jest.spyOn(User,'findOne')as jest.Mock).mockResolvedValue({
-      id:1,
-      confirmed:false,
-      password:'hashpassword',
-      email:'userNotConfirmed@gmail.com'
-    })
+    (jest.spyOn(User, "findOne") as jest.Mock).mockResolvedValue({
+      id: 1,
+      confirmed: false,
+      password: "hashpassword",
+      email: "userNotConfirmed@gmail.com",
+    });
     const response = await request(server).post("/api/auth/login").send({
-      password: "123456",
+      password: "test123",
       email: "userNotExist@gmail.com",
     });
     expect(response.status).toBe(403);
     expect(response.status).not.toBe(200);
-    expect(response.body).toHaveProperty("error", "You have not confirm your account");
+    expect(response.body).toHaveProperty(
+      "error",
+      "You have not confirm your account"
+    );
   });
 
   it("Should return 403 and display error when account is not confirmed", async () => {
+    const userData = {
+      name: "Test",
+      email: "userNotExist@gmail.com",
+      password: "test123",
+    };
 
-   const userData = {
-    name:'Test',
-    email:'userNotExist@gmail.com',
-    password:'123456'
-   };
-
-   (await request(server).post('/api/auth/login').send(userData));
+    await request(server).post("/api/auth/login").send(userData);
     const response = await request(server).post("/api/auth/login").send({
-      password: "123456",
+      password: "test123",
       email: "userNotExist@gmail.com",
     });
     expect(response.status).toBe(403);
     expect(response.status).not.toBe(200);
     expect(response.status).not.toBe(404);
-    expect(response.body).toHaveProperty("error", "You have not confirm your account");
+    expect(response.body).toHaveProperty(
+      "error",
+      "You have not confirm your account"
+    );
   });
 
   it("Should return 401 and display error when password is incorrect", async () => {
-
-
     const findOne = (
       jest.spyOn(User, "findOne") as jest.Mock
     ).mockResolvedValue({
@@ -248,10 +244,7 @@ describe('AUthentication',()=>{
     expect(checkPassword).toHaveBeenCalledTimes(1);
   });
 
-
   it("Should return 401 and display error when password is incorrect", async () => {
-
-
     const findOne = (
       jest.spyOn(User, "findOne") as jest.Mock
     ).mockResolvedValue({
@@ -264,25 +257,115 @@ describe('AUthentication',()=>{
       .spyOn(authUtils, "checkPassword")
       .mockResolvedValue(true);
 
-
-      const generateJWT = (jest.spyOn(jwtUtilis,'generateJWT').mockReturnValue('jsonwebtokenfalse'))
-
+    const generateJWT = jest
+      .spyOn(jwtUtilis, "generateJWT")
+      .mockReturnValue("jsonwebtokenfalse");
 
     const response = await request(server).post("/api/auth/login").send({
-      password: "correctpassword",
+      password: "test123",
       email: "test@gmail.com",
     });
     expect(response.status).toBe(200);
-    expect(response.body).toEqual('jsonwebtokenfalse');
+    expect(response.body).toEqual("jsonwebtokenfalse");
     expect(findOne).toHaveBeenCalled();
     expect(findOne).toHaveBeenCalledTimes(1);
     expect(checkPassword).toHaveBeenCalled();
     expect(checkPassword).toHaveBeenCalledTimes(1);
-    expect(checkPassword).toHaveBeenCalledWith('correctpassword','hashpassword');
+    expect(checkPassword).toHaveBeenCalledWith(
+      "test123",
+      "hashpassword"
+    );
     expect(generateJWT).toHaveBeenCalled();
     expect(generateJWT).toHaveBeenCalledTimes(1);
     expect(generateJWT).toHaveBeenCalledWith(1);
   });
+});
+
+let jwt:string
+async function authenticateUser (){
+  const response = await request(server).post('/api/auth/login').send({
+    password:'test123',
+    email:'test@test.com'
+  })
+
+  jwt= response.body
+  expect(response.status).toBe(200)
+}
+describe("BudgetController.getAll", () => {
+
+  // let jwt:string
+  beforeAll(()=>{
+    jest.restoreAllMocks()// reset all function of jest.spy to his origin implementation
+  })
+  beforeAll(async()=>{
+
+    await authenticateUser()
+  })
+  it("should return code 401 and reject unauthenticated access to budget wihout a jwt", async () => {
+    const response = await request(server).get("/api/budgets");
+
+    expect(response.status).toBe(401);
+    expect(response.status).not.toBe(200);
+    expect(response.body).toHaveProperty("error", "Unauthorized");
+  });
 
 
+  it("should return code 500 and reject error access to budget wihout invalid jwt", async () => {
+    const response = await request(server).get("/api/budgets").auth('not_valid',{type:'bearer'});
+
+    expect(response.status).toBe(500);
+    expect(response.status).not.toBe(200);
+    expect(response.body).toHaveProperty("error", 'Incorrect token');
+  });
+
+
+
+  it("should return code 201 and data of budget", async () => {
+    const response = await request(server).get("/api/budgets").auth(jwt,{type:'bearer'});
+
+    expect(response.status).toBe(200);
+    expect(response.status).not.toBe(401);
+    expect(response.body).not.toHaveProperty("error", "Unauthorized");
+    expect(response.body).toHaveLength(0)
+  });
+});
+
+describe('BudgetController.createBudget',()=>{
+
+  beforeAll(async()=>{
+  await authenticateUser()
+  })
+  it("should return code 401 and reject unauthenticated post request to create budget wihout a jwt", async () => {
+    const response = await request(server).post("/api/budgets");
+
+    expect(response.status).toBe(401);
+    expect(response.status).not.toBe(200);
+    expect(response.body).toHaveProperty("error", "Unauthorized");
+  });
+
+
+  it("should return code 400 and error when send the form with negative amount", async () => {
+    const response = await request(server).post("/api/budgets").auth(jwt,{type:'bearer'}).send({
+      name:'test',
+      amount:-3000
+    });
+
+    expect(response.status).toBe(400);
+    expect(response.status).not.toBe(200);
+    expect(response.body).toHaveProperty("errors");
+    expect(response.body.errors[0].msg).toEqual("The budget most be over 0");
+    expect(response.body.errors).toHaveLength(1);
+  });
+
+
+  it("should return code 201 and most create budget", async () => {
+    const response = await request(server).post("/api/budgets").auth(jwt,{type:'bearer'}).send({
+      name:'test',
+      amount:3000
+    });
+
+    expect(response.status).toBe(201);
+    expect(response.status).not.toBe(200);
+    expect(response.body).toBe("Budget created successfully");
+  });
 })
