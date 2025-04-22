@@ -56,7 +56,7 @@ export class AuthController {
      userToken.confirmed = true;
      userToken.token = null;
       await userToken.save();
-      res.send("User successfully confirmedy");
+      res.send("User successfully confirmed");
     } catch (error) {
       // console.log(error);
       res.status(500).json({ error: "There is error" });
