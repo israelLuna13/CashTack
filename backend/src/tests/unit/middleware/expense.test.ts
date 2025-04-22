@@ -1,6 +1,6 @@
 import { createRequest, createResponse } from "node-mocks-http";
 
-import { validateExpenseExist } from "../../../middleware/expense";
+import { validateExpenseExist, validateExpenseId, validateExpenseInput } from "../../../middleware/expense";
 import Expense from "../../../models/Expense";
 import { expenses } from "../../mocs/expenses";
 import { budgets } from "../../mocs/budget";
@@ -92,3 +92,107 @@ describe("Expenses Middleware - validateExpenseExist", () => {
     expect(data).toEqual({ error: "Invalid action" });
   });
 });
+
+describe('Expense Middleware - validateExpenseInput',()=>{
+  it('Should display error when the form is empty',async()=>{
+
+    const req = createRequest({
+      method:'POST',
+      body:{
+        name:'test',
+        amount:100
+      }
+    })
+
+    const res = createResponse();
+    const next = jest.fn()
+
+    await validateExpenseInput(req,res,next)
+
+    expect(next).toHaveBeenCalled()
+
+  })
+  it('should not call next() when input is invalid', async () => {
+    const req = createRequest({
+      method: 'POST',
+      body: {
+        name: '',
+        amount: -5,
+      },
+    });
+
+    const res = createResponse();
+    const next = jest.fn();
+
+    await validateExpenseInput(req, res, next);
+
+    expect(next).toHaveBeenCalled();
+  });
+})
+
+describe('Expense Middleware - validateExpenseId',()=>{
+  beforeAll(()=>{
+    jest.resetAllMocks()
+  })
+  it('Should display error when id is invalid',async()=>{
+
+    const req = createRequest({
+      method:'POST',
+      params:{expenseId:0}
+    })
+
+    const res = createResponse();
+    const next = jest.fn()
+
+    await validateExpenseId(req,res,next)
+
+    const data = res._getJSONData()    
+
+    expect(res.statusCode).toBe(400)
+    expect(data.errors).toHaveLength(1)
+    expect(next).not.toHaveBeenCalled()
+
+  })
+
+  it('Should display execute next function when id is correct',async()=>{
+
+    const req = createRequest({
+      method:'POST',
+      params:{expenseId:1}
+    })
+
+    const res = createResponse();
+    const next = jest.fn()
+
+    await validateExpenseId(req,res,next)
+
+    expect(next).toHaveBeenCalled()
+
+
+  })
+
+  // it('Should return code 500 and display message error',async()=>{
+
+  //   const req = createRequest({
+  //     method:'POST',
+  //     params:{expenseId:1}
+  //   })
+
+  //   const res = createResponse();
+  //   const next = jest.fn()
+
+  //   next.mockRejectedValue(true)
+
+  //   await validateExpenseId(req,res,next)
+
+  //   const data = res._getJSONData()
+
+  //   expect(res.statusCode).toBe(500)
+  //   expect(data).toHaveProperty('error','There is error')
+
+  //   expect(next).toHaveBeenCalled()
+
+
+//  })
+
+})

@@ -6,6 +6,7 @@ import User from "../../models/User";
 import * as authUtils from "../../helper/auth";
 
 import * as jwtUtilis from "../../helper/jtw";
+import { BudgetController } from "../../controllers/BudgetController";
 
 describe("Authentitacion.createAccount", () => {
   beforeAll(async () => {
@@ -65,7 +66,6 @@ describe("Authentitacion.createAccount", () => {
     expect(response.body.errors).not.toHaveLength(5);
     expect(createMock).not.toHaveBeenCalled();
   });
-
   it("Should create new user sucessfully ", async () => {
     const response = await request(server)
       .post("/api/auth/create-account")
@@ -271,36 +271,31 @@ describe("AUthentication.login", () => {
     expect(findOne).toHaveBeenCalledTimes(1);
     expect(checkPassword).toHaveBeenCalled();
     expect(checkPassword).toHaveBeenCalledTimes(1);
-    expect(checkPassword).toHaveBeenCalledWith(
-      "test123",
-      "hashpassword"
-    );
+    expect(checkPassword).toHaveBeenCalledWith("test123", "hashpassword");
     expect(generateJWT).toHaveBeenCalled();
     expect(generateJWT).toHaveBeenCalledTimes(1);
     expect(generateJWT).toHaveBeenCalledWith(1);
   });
 });
 
-let jwt:string
-async function authenticateUser (){
-  const response = await request(server).post('/api/auth/login').send({
-    password:'test123',
-    email:'test@test.com'
-  })
+//---------------------------------
+let jwt: string;
+async function authenticateUser() {
+  const response = await request(server).post("/api/auth/login").send({
+    password: "test123",
+    email: "test@test.com",
+  });
 
-  jwt= response.body
-  expect(response.status).toBe(200)
+  jwt = response.body;
+  expect(response.status).toBe(200);
 }
 describe("BudgetController.getAll", () => {
-
-  // let jwt:string
-  beforeAll(()=>{
-    jest.restoreAllMocks()// reset all function of jest.spy to his origin implementation
-  })
-  beforeAll(async()=>{
-
-    await authenticateUser()
-  })
+  beforeAll(() => {
+    jest.restoreAllMocks(); // reset all function of jest.spy to his origin implementation
+  });
+  beforeAll(async () => {
+    await authenticateUser();
+  });
   it("should return code 401 and reject unauthenticated access to budget wihout a jwt", async () => {
     const response = await request(server).get("/api/budgets");
 
@@ -309,32 +304,32 @@ describe("BudgetController.getAll", () => {
     expect(response.body).toHaveProperty("error", "Unauthorized");
   });
 
-
   it("should return code 500 and reject error access to budget wihout invalid jwt", async () => {
-    const response = await request(server).get("/api/budgets").auth('not_valid',{type:'bearer'});
+    const response = await request(server)
+      .get("/api/budgets")
+      .auth("not_valid", { type: "bearer" });
 
     expect(response.status).toBe(500);
     expect(response.status).not.toBe(200);
-    expect(response.body).toHaveProperty("error", 'Incorrect token');
+    expect(response.body).toHaveProperty("error", "Incorrect token");
   });
 
-
-
   it("should return code 201 and data of budget", async () => {
-    const response = await request(server).get("/api/budgets").auth(jwt,{type:'bearer'});
+    const response = await request(server)
+      .get("/api/budgets")
+      .auth(jwt, { type: "bearer" });
 
     expect(response.status).toBe(200);
     expect(response.status).not.toBe(401);
     expect(response.body).not.toHaveProperty("error", "Unauthorized");
-    expect(response.body).toHaveLength(0)
+    expect(response.body).toHaveLength(0);
   });
 });
 
-describe('BudgetController.createBudget',()=>{
-
-  beforeAll(async()=>{
-  await authenticateUser()
-  })
+describe("BudgetController.createBudget", () => {
+  beforeAll(async () => {
+    await authenticateUser();
+  });
   it("should return code 401 and reject unauthenticated post request to create budget wihout a jwt", async () => {
     const response = await request(server).post("/api/budgets");
 
@@ -343,12 +338,14 @@ describe('BudgetController.createBudget',()=>{
     expect(response.body).toHaveProperty("error", "Unauthorized");
   });
 
-
   it("should return code 400 and error when send the form with negative amount", async () => {
-    const response = await request(server).post("/api/budgets").auth(jwt,{type:'bearer'}).send({
-      name:'test',
-      amount:-3000
-    });
+    const response = await request(server)
+      .post("/api/budgets")
+      .auth(jwt, { type: "bearer" })
+      .send({
+        name: "test",
+        amount: -3000,
+      });
 
     expect(response.status).toBe(400);
     expect(response.status).not.toBe(200);
@@ -357,15 +354,175 @@ describe('BudgetController.createBudget',()=>{
     expect(response.body.errors).toHaveLength(1);
   });
 
-
   it("should return code 201 and most create budget", async () => {
-    const response = await request(server).post("/api/budgets").auth(jwt,{type:'bearer'}).send({
-      name:'test',
-      amount:3000
-    });
+    const response = await request(server)
+      .post("/api/budgets")
+      .auth(jwt, { type: "bearer" })
+      .send({
+        name: "test",
+        amount: 3000,
+      });
 
     expect(response.status).toBe(201);
     expect(response.status).not.toBe(200);
     expect(response.body).toBe("Budget created successfully");
   });
+});
+
+describe('BudgetController.getById',()=>{
+
+  beforeAll(async()=>{
+    await authenticateUser()
+  })
+  it('"should return code 401 and reject unauthenticated get request wihout a jwt',async()=>{
+    const response = await request(server).get("/api/budgets/1");
+
+    expect(response.status).toBe(401);
+    expect(response.status).not.toBe(200);
+    expect(response.body).toHaveProperty("error", "Unauthorized");
+  })
+
+  it('"should return code 400 and errors get request with invalid id',async()=>{
+    const response = await request(server).get("/api/budgets/id-not-valid").auth(jwt,{type:'bearer'});
+
+    expect(response.status).toBe(400);
+    expect(response.status).not.toBe(401);
+    expect(response.body.errors).toHaveLength(2);
+    expect(response.body.errors).toBeDefined();
+    expect(response.body).toHaveProperty('errors');
+  })
+
+
+  it('"should return code 404 not found when budget not exist',async()=>{
+    const response = await request(server).get("/api/budgets/1000").auth(jwt,{type:'bearer'});
+
+    expect(response.status).toBe(404);
+    expect(response.status).not.toBe(400);
+    expect(response.status).not.toBe(500);
+    expect(response.body.error).toBeDefined();
+    expect(response.body).toHaveProperty('error','The budget do not exist');
+  })
+
+
+  it('"should return code 200 and budget with id 1',async()=>{
+    const response = await request(server).get("/api/budgets/1").auth(jwt,{type:'bearer'});
+
+    expect(response.status).toBe(200);
+    expect(response.status).not.toBe(400);
+    expect(response.status).not.toBe(500);
+  })
+
+  it('"should return code 200 and budget with id 1',async()=>{
+    const response = await request(server).get("/api/budgets/1").auth(jwt,{type:'bearer'});
+
+    expect(response.status).toBe(200);
+    expect(response.status).not.toBe(400);
+    expect(response.status).not.toBe(500);
+  })
+})
+
+describe('BudgetController.updateBudget',()=>{
+  beforeAll(async()=>{
+    await authenticateUser()
+  })
+
+  it("Should display validation errors when form is empty", async () => {
+    const response = await request(server)
+      .put("/api/budgets/1").auth(jwt,{type:'bearer'})
+      .send({});
+
+    const createMock = jest.spyOn(BudgetController, "editBudgetByID");
+    expect(response.status).toBe(400);
+    expect(response.status).not.toBe(201);
+    expect(response.body).toHaveProperty("errors");
+    expect(response.body.errors).toHaveLength(4);
+    expect(response.body.errors).not.toHaveLength(3);
+    expect(createMock).not.toHaveBeenCalled();
+  });
+  it('should return code 401 and reject unauthenticated put request wihout a jwt',async()=>{
+    const response = await request(server).put("/api/budgets/1");
+
+    expect(response.status).toBe(401);
+    expect(response.status).not.toBe(200);
+    expect(response.body).toHaveProperty("error", "Unauthorized");
+  })
+  it('"should return code 400 and errors put request with invalid id',async()=>{
+    const response = await request(server).put("/api/budgets/id-not-valid").auth(jwt,{type:'bearer'});8
+
+    expect(response.status).toBe(400);
+    expect(response.status).not.toBe(401);
+    expect(response.body.errors).toHaveLength(2);
+    expect(response.body.errors).toBeDefined();
+    expect(response.body).toHaveProperty('errors');
+  })
+  it('"should return code 404 not found when budget not exist',async()=>{
+    const response = await request(server).put("/api/budgets/1000").auth(jwt,{type:'bearer'}).send({
+      "name":"pet",
+      "amount":2000
+    });;
+
+    expect(response.status).toBe(404);
+    expect(response.status).not.toBe(400);
+    expect(response.status).not.toBe(500);
+    expect(response.body.error).toBeDefined();
+    expect(response.body).toHaveProperty('error','The budget do not exist');
+  })
+
+  it("Should return code 200 and display Budget updated successfully", async () => {
+    const response = await request(server)
+      .put("/api/budgets/1").auth(jwt,{type:'bearer'})
+      .send({
+        "name":"pet",
+        "amount":2000
+      });
+
+    expect(response.status).toBe(200);
+    expect(response.status).not.toBe(201);
+    expect(response.body).toEqual('Budget updated successfully')
+  });
+})
+
+
+describe('BudgetController.deleteBudget',()=>{
+
+  beforeAll(async()=>{
+    await authenticateUser()
+  })
+
+  it('should return code 401 and reject unauthenticated delete request wihout a jwt',async()=>{
+    const response = await request(server).delete("/api/budgets/1");
+
+    expect(response.status).toBe(401);
+    expect(response.status).not.toBe(200);
+    expect(response.body).toHaveProperty("error", "Unauthorized");
+  })
+  it('"should return code 400 and errors delete request with invalid id',async()=>{
+    const response = await request(server).delete("/api/budgets/id-not-valid").auth(jwt,{type:'bearer'});
+
+    expect(response.status).toBe(400);
+    expect(response.status).not.toBe(401);
+    expect(response.body.errors).toHaveLength(2);
+    expect(response.body.errors).toBeDefined();
+    expect(response.body).toHaveProperty('errors');
+  })
+
+  it('"should return code 404 not found when budget not exist',async()=>{
+    const response = await request(server).delete("/api/budgets/1000").auth(jwt,{type:'bearer'})
+
+    expect(response.status).toBe(404);
+    expect(response.status).not.toBe(400);
+    expect(response.status).not.toBe(500);
+    expect(response.body.error).toBeDefined();
+    expect(response.body).toHaveProperty('error','The budget do not exist');
+  })
+
+  it("Should return code 200 and display Budget deleted successfully", async () => {
+    const response = await request(server)
+      .delete("/api/budgets/1").auth(jwt,{type:'bearer'});
+
+    expect(response.status).toBe(200);
+    expect(response.status).not.toBe(201);
+    expect(response.body).toEqual('Budget deleted successfully')
+  });
+
 })

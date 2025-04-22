@@ -29,7 +29,7 @@ export class ExpensesController {
       await expense.update(req.body);
       res.json("Expense updated successfully");
     } catch (error) {
-      console.log(error);
+      //console.log(error);
       res.status(500).json({ error: "There was a error" });
     }
   };

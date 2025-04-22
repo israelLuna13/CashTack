@@ -9,7 +9,7 @@
     "build": "tsc",
     "dev:api": "nodemon src/index.ts --api",
     "test": "jest",
-    "test:coverage": "jest --coverage",
+    "test:coverage": "npm run pretest && jest --coverage ",
     "pretest": "ts-node ./src/data --clear"
   },
   "author": "israel luna",

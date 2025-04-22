@@ -29,6 +29,7 @@ export class AuthController {
       user.token = token
       await user.save();
 
+      //we have reached the email sending limit (100) for the current billing period
       await AuthEmail.sendConfirmationEmail({ name, email, token: user.token });
       res.status(201).json("User created succesfully");
     } catch (error) {

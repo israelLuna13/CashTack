@@ -23,14 +23,6 @@ export const validateExpenseInput= async(req: Request, res: Response, next: Next
       .custom((value) => value > 0)
       .withMessage("The expense most be over 0")
       .run(req);
-
-    //catch posibility errors
-    // let errors = validationResult(req)
-
-    // if(!errors.isEmpty()){
-    //     res.status(400).json({errors:errors.array()})
-    //     return
-    // }
     next()
 }
 
