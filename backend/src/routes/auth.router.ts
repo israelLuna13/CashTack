@@ -274,8 +274,73 @@ body("password")
 handleInputsErrors,AuthController.resetPasswordWithPassword)
 
 
+/**
+ * @swagger
+ * /api/auth/user:
+ *   get:
+ *     summary: Get user profile
+ *     tags: [Auth]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Successfully retrieved user data.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 id:
+ *                   type: integer
+ *                   example: 1
+ *                 name:
+ *                   type: string
+ *                   example: John Doe
+ *                 email:
+ *                   type: string
+ *                   example: johndoe@example.com
+ *       401:
+ *         description: Unauthorized - Invalid or missing token.
+ *       500:
+ *         description: Internal server error.
+ */
 router.get('/user',authenticate,AuthController.getUSer)
 
+
+/**
+ * @swagger
+ * /api/auth/update-password:
+ *   post:
+ *     summary: Update password
+ *     tags: [Auth]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - current_password
+ *               - new_password
+ *             properties:
+ *               current_password:
+ *                 type: string
+ *                 example: myOldPassword123
+ *               new_password:
+ *                 type: string
+ *                 example: myNewPassword456
+ *     responses:
+ *       200:
+ *         description: Password successfully updated.
+ *       400:
+ *         description: Validation failed .
+ *       401:
+ *         description: Unauthorized. Token missing,  invalid or or current password is incorrect.
+ *       500:
+ *         description: Internal server error.
+ */
 router.post('/update-password',authenticate
   ,body("current_password")
   .notEmpty()
@@ -286,6 +351,37 @@ router.post('/update-password',authenticate
   .isLength({ min: 6 })
   .withMessage("The new password is very short, most has minium 8 characters"),handleInputsErrors,AuthController.updatePassword)
 
+
+  /**
+ * @swagger
+ * /api/auth/check-password:
+ *   post:
+ *     summary: check password
+ *     tags: [Auth]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - current_password
+ *             properties:
+ *               current_password:
+ *                 type: string
+ *                 example: myOldPassword123
+ *     responses:
+ *       200:
+ *         description: The password is correct.
+ *       400:
+ *         description: Validation failed.
+ *       401:
+ *         description: Current password is incorrect.
+ *       500:
+ *         description: Internal server error.
+ */
   router.post('/check-password',authenticate
     ,body("current_password")
     .notEmpty()
