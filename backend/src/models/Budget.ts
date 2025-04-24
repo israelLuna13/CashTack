@@ -19,7 +19,7 @@ class Budget extends Model{
     })
     declare amount:number
 
-    // Budget has many expenses but one expense has only budget
+    // one Budget has many expenses but one expense has only one budget
     @HasMany(() => Expense,{
         onUpdate:'CASCADE',
         onDelete:'CASCADE'

@@ -21,7 +21,8 @@ class Expense extends Model{
     @ForeignKey(() => Budget)
     declare budgetId:number
 
-    // Budget has many expenses but one expense has only budget
+// the Budget has many expenses but one expense has only one budget
+
     @BelongsTo(()=> Budget)
     declare budget:Budget
 }

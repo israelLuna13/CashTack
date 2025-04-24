@@ -21,7 +21,7 @@ export const validateExpenseInput= async(req: Request, res: Response, next: Next
       .isNumeric()
       .withMessage("The amount is not valid")
       .custom((value) => value > 0)
-      .withMessage("The expense most be over 0")
+      .withMessage("The ID must be greater than 0")
       .run(req);
     next()
 }
@@ -43,7 +43,7 @@ export const validateExpenseId=async(req: Request, res: Response, next: NextFunc
 
     next();
   } catch (error) {
-    res.status(500).json({ error: "There is error" });
+    res.status(500).json({ error: "There is an error" });
   }
 }
 
@@ -64,7 +64,7 @@ export const validateExpenseExist = async(req: Request, res: Response, next: Nex
       next()
      } catch (error) {
         //console.log(error);
-        res.status(500).json({error:'There is error'})
+        res.status(500).json({error:'There is an error'})
      }
 
      }

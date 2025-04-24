@@ -11,7 +11,7 @@ export class AuthController {
     try {
       const userExist = await User.findOne({ where: { email } });
       if (userExist) {
-        const error = new Error("User already exist with these email");
+        const error = new Error("The user already exists with that email address");
         res.status(409).json({ error: error.message });
         return;
       }
@@ -21,7 +21,7 @@ export class AuthController {
 
       const token = user.token = generateToken();
 
-      //saved token in the global object to doing integration test before token be deleted
+      //Token saved in the global object to perform integration testing before deleting the token
       if(process.env.NODE_ENV !== 'production')
       {
         globalThis.cashTrackerConfirmationToken = token
@@ -31,10 +31,10 @@ export class AuthController {
 
       //we have reached the email sending limit (100) for the current billing period
       await AuthEmail.sendConfirmationEmail({ name, email, token: user.token });
-      res.status(201).json("User created succesfully");
+      res.status(201).json("User created successfully");
     } catch (error) {
       // console.log(error);
-      res.status(500).json({ error: "There is error" });
+      res.status(500).json({ error: "There is an error" });
     }
   };
 
@@ -59,7 +59,7 @@ export class AuthController {
       res.send("User successfully confirmed");
     } catch (error) {
       // console.log(error);
-      res.status(500).json({ error: "There is error" });
+      res.status(500).json({ error: "There is an error" });
     }
   };
   static login = async (req: Request, res: Response) => {
@@ -76,7 +76,7 @@ export class AuthController {
     
 
       if (!userExist.confirmed) {
-        const error = new Error("You have not confirm your account");
+        const error = new Error("You have not confirmed your account");
         res.status(403).json({ error: error.message });
         return;
       }
@@ -95,7 +95,7 @@ export class AuthController {
       res.json(jwt);
     } catch (error) {
       //console.log(error);
-      res.status(500).json({ error: "There is error" });
+      res.status(500).json({ error: "There is an error" });
     }
   };
 
@@ -120,7 +120,7 @@ export class AuthController {
       res.send("Check your email and follow instructions");
     } catch (error) {
       // console.log(error);
-      res.status(500).json({ error: "There is error" });
+      res.status(500).json({ error: "There is an error" });
     }
   };
 
@@ -138,7 +138,7 @@ export class AuthController {
       res.send("correct token");
     } catch (error) {
       // console.log(error);
-      res.status(500).json({ error: "There is error" });
+      res.status(500).json({ error: "There is an error" });
     }
   };
 
@@ -162,7 +162,7 @@ export class AuthController {
       res.send("The password has been updated");
     } catch (error) {
       // console.log(error);
-      res.status(500).json({ error: "There is error" });
+      res.status(500).json({ error: "There is an error" });
     }
   };
 
@@ -183,7 +183,7 @@ export class AuthController {
       );
 
       if (!isCorrectPassword) {
-        const error = new Error("Incorrect current password");
+        const error = new Error("Current password incorrect");
         res.status(401).json({ error: error.message });
         return;
       }
@@ -193,7 +193,7 @@ export class AuthController {
       res.send("The password has been updated");
     } catch (error) {
       // console.log(error);
-      res.status(500).json({ error: "There is error" });
+      res.status(500).json({ error: "There is an error" });
     }
   }
 
@@ -208,14 +208,14 @@ export class AuthController {
 
       if(!isCorrectPassword)
       {
-        const error = new Error("Incorrect current password");
+        const error = new Error("Current password incorrect");
         res.status(401).json({ error: error.message });
         return;
       }
       res.send('The password is correct')
     } catch (error) {
        // console.log(error);
-       res.status(500).json({ error: "There is error" });
+       res.status(500).json({ error: "There is an error" });
     }
 
   }

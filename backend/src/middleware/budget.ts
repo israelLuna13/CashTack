@@ -11,7 +11,6 @@ declare global {
     }
 }
 
-//TODO:MAKE TESTO TO  validateBudgetId,validateBudgetInput
 export const validateBudgetId = async(req: Request, res: Response, next: NextFunction)=>{
 
  await param("budgetId")
@@ -20,7 +19,7 @@ export const validateBudgetId = async(req: Request, res: Response, next: NextFun
    .notEmpty()
    .withMessage("ID is required")
    .custom((value) => value > 0)
-   .withMessage("The ID most be over 0").run(req); 
+   .withMessage("The ID must be greater than 0").run(req); 
 
     let errors = validationResult(req)
     if(!errors.isEmpty()){
@@ -47,7 +46,7 @@ export const validateBudgetExist = async(req: Request, res: Response, next: Next
         next()
        } catch (error) {
           //console.log(error);
-          res.status(500).json({error:'There is error'})
+          res.status(500).json({error:'There is an error'})
        }
 
        }
@@ -62,7 +61,7 @@ export const validateBudgetInput= async(req: Request, res: Response, next: NextF
       .isNumeric()
       .withMessage("The amount is not valid")
       .custom((value) => value > 0)
-      .withMessage("The budget most be over 0")
+      .withMessage("The ID must be greater than 0")
       .run(req);
 
     // let errors = validationResult(req)

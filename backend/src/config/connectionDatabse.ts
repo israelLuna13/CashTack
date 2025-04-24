@@ -4,7 +4,7 @@ import { db } from './db';
 export async function connectDB(){
     try {
         await db.authenticate()
-        db.sync()//that create tables automaticaly
+        db.sync()//that create tables automatically
         console.log(colors.bgGreen.black("Database is working"));
         
     } catch (error) {

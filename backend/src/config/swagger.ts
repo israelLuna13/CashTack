@@ -31,7 +31,7 @@ const swaggerDefinition = {
 
 const options = {
   swaggerDefinition,
-  apis: ['src/routes/*.ts'], //file when will be code swaggerz
+  apis: ['src/routes/*.ts'], //file where the code of swagger will be 
 };
 
 export const swaggerSpec = swaggerJSDoc(options);

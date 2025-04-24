@@ -67,7 +67,7 @@ describe("middleware budget budgetExist.", () => {
     const data = res._getJSONData();
 
     expect(res.statusCode).toBe(500);
-    expect(data).toEqual({ error: "There is error" });
+    expect(data).toEqual({ error: "There is an error" });
 
     expect(next).not.toHaveBeenCalled();
   });

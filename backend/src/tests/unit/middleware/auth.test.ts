@@ -49,7 +49,7 @@ describe('Middleware Auth userExist',()=>{
         const data = res._getJSONData()
         
         expect(res.statusCode).toBe(500)
-        expect(data).toHaveProperty('error','There is error')
+        expect(data).toHaveProperty('error','There is an error')
         expect(next).not.toHaveBeenCalled()
     })
 
@@ -124,7 +124,7 @@ describe('Middleware Auth tokenExist',()=>{
 
         const data = res._getJSONData()
         expect(res.statusCode).toBe(500)
-        expect(data).toHaveProperty('error','There is error')
+        expect(data).toHaveProperty('error','There is an error')
         expect(next).not.toHaveBeenCalled()
 
     })

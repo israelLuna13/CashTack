@@ -35,8 +35,8 @@ describe('AuthController.createAccount',()=>{
         await AuthController.createAccount(req,res)
         const data = res._getJSONData()
         expect(res.statusCode).toBe(409)
-     //   expect(data).toEqual({error:'User already exist with these email'})
-        expect(data).toHaveProperty('error','User already exist with these email')
+     //   expect(data).toEqual({error:'The user already exists with that email address'})
+        expect(data).toHaveProperty('error','The user already exists with that email address')
         expect(User.findOne).toHaveBeenCalled()
         expect(User.findOne).toHaveBeenCalledTimes(1)
 
@@ -85,7 +85,7 @@ describe('AuthController.createAccount',()=>{
       expect(AuthEmail.sendConfirmationEmail).toHaveBeenCalledTimes(1)
       expect(mockUser.save).toHaveBeenCalled()
       expect(res.statusCode).toBe(201)
-      expect(data).toEqual('User created succesfully')
+      expect(data).toEqual('User created successfully')
     })
 
     it('Should return code 500 and error message by User.create',async()=>{
@@ -114,7 +114,7 @@ describe('AuthController.createAccount',()=>{
       expect(User.create).toHaveBeenCalledTimes(1)
       expect(mockUser.save).not.toHaveBeenCalled()
       expect(res.statusCode).toBe(500)
-      expect(data).toHaveProperty('error','There is error')
+      expect(data).toHaveProperty('error','There is an error')
 
     })
 })
@@ -133,7 +133,7 @@ describe('AuthController.Login',()=>{
             await AuthController.login(req,res)
             const data = res._getJSONData()
             expect(res.statusCode).toBe(403)
-            expect(data).toHaveProperty('error','You have not confirm your account')
+            expect(data).toHaveProperty('error','You have not confirmed your account')
     })
 
     it('Should return 401 if password is incorrect',async()=>{
@@ -225,7 +225,7 @@ describe('AuthController.checkToken',()=>{
         AuthController.checkToken(req,res)
         const data = res._getJSONData()
         expect(res.statusCode).toBe(500)
-        expect(data).toHaveProperty('error',"There is error")
+        expect(data).toHaveProperty('error',"There is an error")
     })
 })
 
@@ -299,7 +299,7 @@ describe('AuthController.confirmAccount',()=>{
 
         const data = res._getJSONData()
         expect(res.statusCode).toBe(500)
-        expect(data).toHaveProperty('error','There is error')
+        expect(data).toHaveProperty('error','There is an error')
     })
 
 
@@ -381,7 +381,7 @@ describe('AuthController.forgotPassword',()=>{
         expect(res.statusCode).toBe(500)
         expect(userMock.save).toHaveBeenCalled()
         expect(userMock.save).toHaveBeenCalledTimes(1)
-        expect(data).toHaveProperty('error','There is error')
+        expect(data).toHaveProperty('error','There is an error')
     })
 
 })
@@ -483,7 +483,7 @@ describe('AuthController.resetPasswordWithPassword',()=>{
 
       const data = res._getJSONData();
       expect(res.statusCode).toBe(500);
-      expect(data).toHaveProperty("error", "There is error");
+      expect(data).toHaveProperty("error", "There is an error");
       expect(User.findOne).toHaveBeenCalled();
       expect(User.findOne).toHaveBeenCalledTimes(1);
       expect(hashPassword).toHaveBeenCalledWith(req.body.password);
@@ -555,7 +555,7 @@ describe('AuthController.checkPassword',()=>{
         const data = res._getJSONData()
 
         expect(res.statusCode).toBe(401)
-        expect(data).toHaveProperty('error','Incorrect current password')
+        expect(data).toHaveProperty('error','Current password incorrect')
         expect(User.findByPk).toHaveBeenCalled() 
         expect(User.findByPk).toHaveBeenCalledTimes(1) 
         expect(checkPassword).toHaveBeenCalledWith(req.body.current_password,userMock.password) 
@@ -580,7 +580,7 @@ describe('AuthController.checkPassword',()=>{
         const data = res._getJSONData()
 
         expect(res.statusCode).toBe(500)
-        expect(data).toHaveProperty('error','There is error')
+        expect(data).toHaveProperty('error','There is an error')
         expect(User.findByPk).toHaveBeenCalled() 
         expect(User.findByPk).toHaveBeenCalledTimes(1) 
     })
@@ -662,7 +662,7 @@ describe('AuthController.updatePassword',()=>{
               const data = res._getJSONData()
       
               expect(res.statusCode).toBe(401)
-              expect(data).toHaveProperty('error','Incorrect current password')
+              expect(data).toHaveProperty('error','Current password incorrect')
               expect(userMock.save).not.toHaveBeenCalled() 
               expect(User.findByPk).toHaveBeenCalled() 
               expect(User.findByPk).toHaveBeenCalledTimes(1) 
@@ -696,7 +696,7 @@ describe('AuthController.updatePassword',()=>{
             const data = res._getJSONData();
 
             expect(res.statusCode).toBe(500);
-            expect(data).toHaveProperty("error", "There is error");
+            expect(data).toHaveProperty("error", "There is an error");
             expect(userMock.save).not.toHaveBeenCalled();
             expect(User.findByPk).toHaveBeenCalled();
             expect(User.findByPk).toHaveBeenCalledTimes(1);

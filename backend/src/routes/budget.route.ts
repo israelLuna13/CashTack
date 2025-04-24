@@ -8,7 +8,7 @@ import { handleInputsErrors } from "../middleware/validation";
 import { authenticate } from "../middleware/auth";
  const router = Router()
 
-// ALL ROUTES HAVE MIDDLWARE WITH CODE THTA WOULD MOST IN THE CONTROLLER, THIS DID TO REDUCER CODE IN THE CONTROLLER
+// ALL ROUTES HAVE MIDDLEWARE WITH CODE THAT SHOULD BE IN THE CONTROLLER FILE, THIS WAS DONE TO REDUCE THE CODE IN THE CONTROLLER
 
  router.use(authenticate)
 //---------------------------------------------------------------------
@@ -16,7 +16,7 @@ import { authenticate } from "../middleware/auth";
  router.param('budgetId',validateBudgetId)
  router.param('budgetId',validateBudgetExist)
 
- router.param('budgetId',HasAcces)// this middleware need data of authenticate and validateBudgetExist
+ router.param('budgetId',HasAcces)// this middleware need data of authentication and validateBudgetExist
 
 //---------------------------------------------------------------------
 

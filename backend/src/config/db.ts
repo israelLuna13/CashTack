@@ -1,13 +1,12 @@
-import {Sequelize} from 'sequelize-typescript'
-import dotenv from "dotenv"
+import { Sequelize } from "sequelize-typescript";
+import dotenv from "dotenv";
 
-dotenv.config()
+dotenv.config();
 
-export const db = new Sequelize(process.env.DATABASE_URL,{
-    models:[__dirname + '/../models/**/*'],
-    dialectOptions:{
-        ssl:{
-        }
-        },
-        logging:false
-})
+export const db = new Sequelize(process.env.DATABASE_URL, {
+  models: [__dirname + "/../models/**/*"],
+  dialectOptions: {
+    ssl: {},
+  },
+  logging: false,//Do not display query messages in the console
+});

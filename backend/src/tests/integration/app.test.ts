@@ -91,7 +91,7 @@ describe("Authentitacion.createAccount", () => {
 
     expect(response.status).toBe(409);
     expect(response.body).toHaveProperty("error");
-    expect(response.body.error).toBe("User already exist with these email");
+    expect(response.body.error).toBe("The user already exists with that email address");
     expect(response.status).not.toBe(400);
     expect(response.status).not.toBe(201);
     expect(response.body).not.toHaveProperty("errors");
@@ -193,7 +193,7 @@ describe("AUthentication.login", () => {
     expect(response.status).not.toBe(200);
     expect(response.body).toHaveProperty(
       "error",
-      "You have not confirm your account"
+      "You have not confirmed your account"
     );
   });
 
@@ -214,7 +214,7 @@ describe("AUthentication.login", () => {
     expect(response.status).not.toBe(404);
     expect(response.body).toHaveProperty(
       "error",
-      "You have not confirm your account"
+      "You have not confirmed your account"
     );
   });
 

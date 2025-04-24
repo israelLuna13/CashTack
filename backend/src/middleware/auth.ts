@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express'
 import jwt from 'jsonwebtoken'
 
-import { body, param} from 'express-validator'
+import { body} from 'express-validator'
 import User from '../models/User'
 declare global{
     namespace Express{
@@ -37,7 +37,7 @@ export const validateExistToken= async(req: Request, res: Response, next: NextFu
       next()
     } catch (error) {
       // console.log(error);
-      res.status(500).json({ error: "There is error" });
+      res.status(500).json({ error: "There is an error" });
     }
 }
 
@@ -58,7 +58,7 @@ export const validateExistUser = async(req: Request, res: Response, next: NextFu
   } catch (error) {
     
     //console.log(error); 
-    res.status(500).json({ error: "There is error" });
+    res.status(500).json({ error: "There is an error" });
   }
 }
 

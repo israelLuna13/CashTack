@@ -1,9 +1,16 @@
-// Looking to send emails in production? Check out our Email API/SMTP product!
 import nodemailer from 'nodemailer'
 import dotenv from 'dotenv'
-//TODO:create type of config
+
+interface IConfig {
+  host:string,
+  port:number,
+  auth:{
+    user:string,
+    pass:string
+  }
+}
 dotenv.config()
-const config = ()=>{
+const config = ():IConfig=>{
     return {
         host:process.env.EMAIL_HOST ,
         port: +process.env.EMAIL_PORT,

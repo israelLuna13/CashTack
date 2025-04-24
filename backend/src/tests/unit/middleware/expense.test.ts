@@ -67,7 +67,7 @@ describe("Middleware expenseExist", () => {
     const data = res._getJSONData();
 
     expect(res.statusCode).toBe(500);
-    expect(data).toEqual({ error: "There is error" });
+    expect(data).toEqual({ error: "There is an error" });
     expect(next).not.toHaveBeenCalled();
   });
 });
@@ -188,7 +188,7 @@ describe('Expense Middleware - validateExpenseId',()=>{
   //   const data = res._getJSONData()
 
   //   expect(res.statusCode).toBe(500)
-  //   expect(data).toHaveProperty('error','There is error')
+  //   expect(data).toHaveProperty('error','There is an error')
 
   //   expect(next).toHaveBeenCalled()
 

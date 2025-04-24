@@ -1,10 +1,7 @@
 import { Request, Response } from "express";
 import Expense from "../models/Expense";
 
-//ALL VALIDATION OF PARAMS AND BODY VALIDATION IS IN THE MIDDLEWARE
-
 export class ExpensesController {
-  // static getAll = async (req: Request, res: Response) => {};
   static crate = async (req: Request, res: Response) => {
     //const {budgetId} = req.params
     try {
@@ -14,7 +11,7 @@ export class ExpensesController {
       res.status(201).json("Expense added sucessfully");
     } catch (error) {
       // console.log(error);
-      res.status(500).json({ error: "There was a error" });
+      res.status(500).json({ error: "There is an error" });
     }
   };
 
@@ -30,7 +27,7 @@ export class ExpensesController {
       res.json("Expense updated successfully");
     } catch (error) {
       //console.log(error);
-      res.status(500).json({ error: "There was a error" });
+      res.status(500).json({ error: "There is an error" });
     }
   };
   static deleteExpenseById = async (req: Request, res: Response) => {
@@ -41,7 +38,7 @@ export class ExpensesController {
       res.json("Expenses deleted successfully");
     } catch (error) {
       // console.log(error);
-      res.status(500).json({ error: "There was a error" });
+      res.status(500).json({ error: "There is an error" });
     }
   };
 }

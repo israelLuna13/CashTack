@@ -21,20 +21,20 @@ export class BudgetController{
             res.json(budgets)
         } catch (error) {
             //console.log(error);
-           res.status(500).json({error:'There is error'})
+           res.status(500).json({error:'There is an error'})
         }
     }
 
     static createBudget = async (req:Request,res:Response)=>{
        try {
-            const bubdget = await Budget.create(req.body)// instance model
+            const bubdget = await Budget.create(req.body)
             bubdget.userId = req.userExist.id
             await bubdget.save()
             res.status(201).json('Budget created successfully')
 
        } catch (error) {
           //console.log(error);
-          res.status(500).json({error:'There is error'})
+          res.status(500).json({error:'There is an error'})
        }
         
     }

@@ -102,7 +102,7 @@ describe("BudgetController.getAll", () => {
 
       await BudgetController.getAll(req, res);
       expect(res.statusCode).toBe(500)
-      expect(res._getJSONData()).toStrictEqual({error:'There is error'})
+      expect(res._getJSONData()).toStrictEqual({error:'There is an error'})
   })
 });
 
@@ -157,7 +157,7 @@ describe("BudgetController.create", ()=>{
 
     const data = res._getJSONData();
     expect(res.statusCode).toBe(500)
-    expect(data).toEqual({error:'There is error'})
+    expect(data).toEqual({error:'There is an error'})
 
     expect(mockBudget.save).not.toHaveBeenCalled()
     expect(Budget.create).toHaveBeenCalledWith(req.body)
