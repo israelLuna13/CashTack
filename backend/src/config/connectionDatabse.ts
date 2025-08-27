@@ -8,7 +8,7 @@ export async function connectDB(){
         console.log(colors.bgGreen.black("Database is working"));
         
     } catch (error) {
-        //console.log(colors.bgRed.white(error));
+        console.log(colors.bgRed.white(error));
         console.log(colors.bgRed.black("Failed connection to database"));
         
     }
