@@ -10,8 +10,12 @@ export const RegisterSchema=z.object({
         path:['password_confirmation']
     } )
 
-export const SuccessSchema=z.string().min(1,{message:'Invalid data'})
+export const SuccessSchema=z.string()
 
 export const ErrorSchema=z.object({
     error:z.string()
 })
+
+export const TokenSchema = z.string({message:'Invalid token'})
+                                    .min(6,{message:'Invalid token'})
+                                    .max(6,{message:'Invalid token'})

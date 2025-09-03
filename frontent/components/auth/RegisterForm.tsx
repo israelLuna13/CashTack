@@ -1,5 +1,4 @@
 "use client"
-
 import { register } from "@/actions/create-account-action"
 import { useFormState } from "react-dom"
 import ErrorMessage from "../ui/ErrorMessage"
@@ -7,25 +6,32 @@ import SuccesMessage from "../ui/SuccesMessage"
 import { useEffect, useRef } from "react"
 
 export default function RegisterForm() {
+
+  //create a reference to the form element , initially set null
   const ref = useRef<HTMLFormElement>(null)
-  //useFormState/useActionSatate: se va a utilizar cuando quiera recuperar algun tipo de error de validacion
+  //useFormState/useActionSatate: we going to work with that when we want to retive some kind of type of information from action such as error messages or succes messages
+
   const [state,dispatch]=useFormState(register,{
     errors:[],
     success:''
   })
-  
+
+  //we use that for clear the form when there is success message
   useEffect(()=>{
+    //if there is success message it's means that user register was correct
     if(state.success){
-      //reiniciar formulario
+      //clear form
       ref.current?.reset()
     }
-
   },[state])
-  return (
-    <form ref={ref} action={dispatch} className="mt-14 space-y-5" noValidate>
-      {state.errors?.map( error => <ErrorMessage key={error}>{error}</ErrorMessage>)}
 
+  return (
+//dispach going to execute the register action
+    <form ref={ref} action={dispatch} className="mt-14 space-y-5" noValidate>
+
+      {state.errors?.map( error => <ErrorMessage key={error}>{error}</ErrorMessage>)}
       {state.success && <SuccesMessage>{state.success }</SuccesMessage>}
+      
         <div className="flex flex-col gap-2">
           <label className="font-bold text-2xl" htmlFor="email">
             Email
