@@ -19,3 +19,7 @@ export const ErrorSchema=z.object({
 export const TokenSchema = z.string({message:'Invalid token'})
                                     .min(6,{message:'Invalid token'})
                                     .max(6,{message:'Invalid token'})
+export const LoginSchema = z.object({
+    email:z.email({message:'Invalid email'}),
+    password:z.string().min(1,{message:'The password is required'})
+})
