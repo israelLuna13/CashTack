@@ -1,5 +1,6 @@
 "use server"
 import {cookies} from 'next/headers'
+import { redirect } from 'next/navigation'
 
 import { ErrorSchema, LoginSchema } from "@/src/schemas"
 
@@ -33,6 +34,7 @@ export async function authenticate(prevState:ActionStateType, formData:FormData)
     })
 
     const json= await req.json()
+
     if(!req.ok){
         const{error}= ErrorSchema.parse(json)
         return{
@@ -46,9 +48,12 @@ export async function authenticate(prevState:ActionStateType, formData:FormData)
         httpOnly:true,//client element don't have acces to cookie, only server components
         path:'/'
     })
-        return{
-        errors:[]
-    }
+
+    redirect('/admin')
+    
+    //     return{
+    //     errors:[]
+    // }
     
     
 }

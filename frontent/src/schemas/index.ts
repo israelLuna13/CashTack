@@ -10,12 +10,6 @@ export const RegisterSchema=z.object({
         path:['password_confirmation']
     } )
 
-export const SuccessSchema=z.string()
-
-export const ErrorSchema=z.object({
-    error:z.string()
-})
-
 export const TokenSchema = z.string({message:'Invalid token'})
                                     .min(6,{message:'Invalid token'})
                                     .max(6,{message:'Invalid token'})
@@ -23,3 +17,22 @@ export const LoginSchema = z.object({
     email:z.email({message:'Invalid email'}),
     password:z.string().min(1,{message:'The password is required'})
 })
+
+export const UserSchema = z.object({
+    id:z.number(),
+    name:z.string(),
+    email:z.string()
+})
+
+export const ForgotPasswordSchema=z.object({
+    email:z.email({message:'Invalid email'})
+})
+
+export const SuccessSchema=z.string()
+
+export const ErrorSchema=z.object({
+    error:z.string()
+})
+
+//types
+export type User= z.infer<typeof UserSchema>

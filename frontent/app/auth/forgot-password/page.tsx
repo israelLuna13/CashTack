@@ -6,6 +6,8 @@ export const metada:Metadata={
     description:"Castraker - Forgot password"
 }
 export default function ForgotPasswordPage() {
+
+ 
     
   return (
     <>

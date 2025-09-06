@@ -117,7 +117,7 @@ export class AuthController {
         email,
         token: userExist.token,
       });
-      res.send("Check your email and follow instructions");
+      res.json("Check your email and follow instructions");
     } catch (error) {
       // console.log(error);
       res.status(500).json({ error: "There is an error" });

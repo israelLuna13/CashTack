@@ -10,10 +10,14 @@
   },
   "dependencies": {
     "@chakra-ui/pin-input": "^2.1.0",
+    "@headlessui/react": "^2.2.7",
+    "@heroicons/react": "^2.2.0",
     "next": "14.2.32",
+    "only": "^0.0.2",
     "react": "^18",
     "react-dom": "^18",
     "react-toastify": "^11.0.5",
+    "server": "^1.0.42",
     "zod": "^4.1.5"
   },
   "devDependencies": {
