@@ -135,7 +135,7 @@ export class AuthController {
     //     return;
     //   }
 
-      res.send("correct token");
+      res.json("correct token, to write new password");
     } catch (error) {
       // console.log(error);
       res.status(500).json({ error: "There is an error" });
@@ -159,7 +159,7 @@ export class AuthController {
       existUserWithToken.token = null;
       await existUserWithToken.save();
 
-      res.send("The password has been updated");
+      res.json("The password has been updated");
     } catch (error) {
       // console.log(error);
       res.status(500).json({ error: "There is an error" });

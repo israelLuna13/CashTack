@@ -9,6 +9,7 @@ export default async function AdminLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  //check token
       const {user}=await verifySession()
 
   return (

@@ -10,6 +10,7 @@ export default function ForgotPasswordForm() {
     errors:[],
     success:''
   })
+
   useEffect(()=>{
     if(state.errors){
         state.errors.forEach(error=>{
@@ -20,8 +21,8 @@ export default function ForgotPasswordForm() {
     if(state.success){
             toast.success(state.success)
     }
-
   },[state])
+  
     return (
         <form 
         action={dispatch}
