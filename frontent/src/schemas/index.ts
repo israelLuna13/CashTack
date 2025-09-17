@@ -37,11 +37,25 @@ export const ResetPasswordSchema = z.object({
         path: ["password_confirmation"]
 });
 
+export const DraftBudgetSchema=z.object({
+    name:z.string().min(1,{message:'The budget name is required'}),
+    amount:z.coerce.number({message:'Invalid amount'}).min(1,{message:'Invalid amount'})
+})
+export const BudgetAPIResponseSchema = z.object({
+        id: z.number(),
+        name: z.string(),
+        amount: z.string(),
+        userId: z.number(),
+        createdAt: z.string(),
+        updatedAt: z.string()
+})
 export const SuccessSchema=z.string()
 
 export const ErrorSchema=z.object({
     error:z.string()
 })
 
+export const BudgetAPIResponseSchemaArray=z.array(BudgetAPIResponseSchema)
 //types
 export type User= z.infer<typeof UserSchema>
+export type Budget = z.infer<typeof BudgetAPIResponseSchema>

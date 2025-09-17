@@ -1,12 +1,12 @@
 import "server-only" //this file only will execute in the server
 import {cache} from 'react'
-import { cookies } from "next/headers"
 import { redirect } from "next/navigation";
 import { UserSchema } from "../schemas";
+import getToken from "./token";
 
 //we use cache to keep session and performace also if token does not changed
 export const verifySession =cache(async()=>{
-    const token = cookies().get('CASTRACKER_TOKEN')
+    const token = getToken()
     if(!token)
         redirect('/auth/login')    
 
@@ -15,7 +15,7 @@ export const verifySession =cache(async()=>{
     
     const req = await fetch(url,{
         headers:{
-            Authorization:`Bearer ${token.value}`
+            Authorization:`Bearer ${token}`
         }
     })
 
