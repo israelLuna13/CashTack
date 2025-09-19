@@ -4,47 +4,46 @@ import { BudgetAPIResponseSchemaArray } from "@/src/schemas";
 import { formatCurrency, formatDate } from "@/src/utils";
 import { Metadata } from "next";
 import Link from "next/link";
-export const metadata:Metadata={
-  title:'CashTraker - Administration page',
-  description:'CashTraker - Administration panel'
+export const metadata: Metadata = {
+  title: "CashTraker - Administration page",
+  description: "CashTraker - Administration panel",
+};
+// to get budget we don't use server action, we only use the server action  when we want to make a request post , delete or update
+async function getUserBudgets() {
+  const token = getToken();
+  const url = `${process.env.API_URL}/budgets`;
+
+  const req = await fetch(url, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  const json = await req.json();
+
+  const budgtes = BudgetAPIResponseSchemaArray.parse(json);
+  return budgtes;
 }
 
-async function getUserBudgets(){
-    const token = getToken()
-    const url = `${process.env.API_URL}/budgets`
-
-     const req = await fetch(url,{
-        headers:{
-            'Authorization':`Bearer ${token}`
-        },
-        
-      })
-      const json = await req.json()
-     
-      const budgtes = BudgetAPIResponseSchemaArray.parse(json)
-      return budgtes
-}
 export default async function AdminPage() {
+  const budgets = await getUserBudgets();
 
-  const budgets=await getUserBudgets()
-  
   return (
     <>
       <div className="flex flex-col-reverse md:flex-row md:justify-between items-center">
         <div className="w-full md:w-auto">
           <h1 className="font-black text-4xl text-purple-950 my-5">
-            Mis Presupuestos
+            My Budgets
           </h1>
           <p className="text-xl font-bold">
-            Maneja y administra tus {""}
-            <span className="text-amber-500">presupuestos</span>
+            Manages and administers{""}
+            <span className="text-amber-500">budgets</span>
           </p>
         </div>
         <Link
           href={"/admin/budgets/new"}
           className="bg-amber-500 p-2 rounded-lg text-white font-bold w-full md:w-auto text-center"
         >
-          Crear Presupuesto
+         Create budget
         </Link>
       </div>
 
@@ -58,8 +57,11 @@ export default async function AdminPage() {
               <div className="flex min-w-0 gap-x-4">
                 <div className="min-w-0 flex-auto space-y-2">
                   <p className="text-sm font-semibold leading-6 text-gray-900">
-                    <Link href={`/admin/budgets/${budget.id}`} className="cursor-pointer hover:underline text-2xl font-bold">
-                    {budget.name}
+                    <Link
+                      href={`/admin/budgets/${budget.id}`}
+                      className="cursor-pointer hover:underline text-2xl font-bold"
+                    >
+                      {budget.name}
                     </Link>
                   </p>
                   <p className="text-xl font-bold text-amber-500">
@@ -71,7 +73,7 @@ export default async function AdminPage() {
                 </div>
               </div>
               <div className="flex shrink-0 items-center gap-x-6">
-                <BudgetMenu budgetId={budget.id}/>
+                <BudgetMenu budgetId={budget.id} />
               </div>
             </li>
           ))}

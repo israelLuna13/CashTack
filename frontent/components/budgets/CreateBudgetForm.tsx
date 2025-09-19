@@ -41,7 +41,7 @@ export default function CreateBudgetForm() {
               id="name"
               className="w-full p-3  border border-gray-100 bg-slate-100"
               type="text"
-              placeholder="Nombre del Presupuesto"
+              placeholder="Budget name"
               name="name"
           />
       </div>
@@ -53,14 +53,14 @@ export default function CreateBudgetForm() {
               type="number"
               id="amount"
               className="w-full p-3  border border-gray-100 bg-slate-100"
-              placeholder="Cantidad Presupuesto"
+              placeholder="Amount budget"
               name="amount"
           />
       </div>
       <input
         type="submit"
         className="bg-amber-500 w-full p-3 text-white uppercase font-bold hover:bg-amber-600 cursor-pointer transition-colors"
-        value='Crear Presupuesto'
+        value='Create budget'
       />
     </form>
   )

@@ -7,17 +7,17 @@ export default function CreateBudgetPage() {
       <div className='flex flex-col-reverse md:flex-row md:justify-between items-center'>
         <div className='w-full md:w-auto'>
           <h1 className='font-black text-4xl text-purple-950 my-5'>
-            Nuevo Presupuesto
+            New Budget
           </h1>
-          <p className="text-xl font-bold">Llena el formulario y crea un nuevo {''}
-            <span className="text-amber-500">presupuesto</span>
+          <p className="text-xl font-bold">Create a new budget{''}
+            <span className="text-amber-500">budget</span>
           </p>
         </div>
         <Link
           href={'/admin'}
           className='bg-amber-500 p-2 rounded-lg text-white font-bold w-full md:w-auto text-center'
         >
-          Volver
+          Go back
         </Link>
       </div>
 

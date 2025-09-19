@@ -28,12 +28,12 @@ export default function BudgetMenu({budgetId}:{budgetId:Budget['id']}) {
                 href={`/admin/budgets/${budgetId}`} 
                 className='block px-3 py-1 text-sm leading-6 text-gray-900'
               >
-                Look Budget
+                See Budget
               </Link>
             </MenuItem>
             <MenuItem>
               <Link
-                href={``}
+                href={`/admin/budgets/${budgetId}/edit`}
                 className='block px-3 py-1 text-sm leading-6 text-gray-900'
               >
                 Update Budget
@@ -46,7 +46,7 @@ export default function BudgetMenu({budgetId}:{budgetId:Budget['id']}) {
                 className='block px-3 py-1 text-sm leading-6 text-red-500'
                 onClick={ () => {} }
               >
-                Eliminar Presupuesto
+                Delete budget
               </button>
             </MenuItem>
           </MenuItems>
