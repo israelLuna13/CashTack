@@ -1,6 +1,5 @@
 import BudgetMenu from "@/components/budgets/BudgetMenu";
-import getToken from "@/src/auth/token";
-import { BudgetAPIResponseSchemaArray } from "@/src/schemas";
+import { getUserBudgets } from "@/src/services/budgets";
 import { formatCurrency, formatDate } from "@/src/utils";
 import { Metadata } from "next";
 import Link from "next/link";
@@ -8,21 +7,6 @@ export const metadata: Metadata = {
   title: "CashTraker - Administration page",
   description: "CashTraker - Administration panel",
 };
-// to get budget we don't use server action, we only use the server action  when we want to make a request post , delete or update
-async function getUserBudgets() {
-  const token = getToken();
-  const url = `${process.env.API_URL}/budgets`;
-
-  const req = await fetch(url, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
-  const json = await req.json();
-
-  const budgtes = BudgetAPIResponseSchemaArray.parse(json);
-  return budgtes;
-}
 
 export default async function AdminPage() {
   const budgets = await getUserBudgets();
@@ -43,7 +27,7 @@ export default async function AdminPage() {
           href={"/admin/budgets/new"}
           className="bg-amber-500 p-2 rounded-lg text-white font-bold w-full md:w-auto text-center"
         >
-         Create budget
+          Create budget
         </Link>
       </div>
 

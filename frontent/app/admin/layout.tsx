@@ -4,13 +4,9 @@ import ToastNotification from "@/components/ui/ToastNotification";
 import { verifySession } from "@/src/auth/dal";
 import Link from "next/link";
 
-export default async function AdminLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+export default async function AdminLayout({children,}: Readonly<{children: React.ReactNode;}>) {
   //check token
-      const {user}=await verifySession()
+  const {user}=await verifySession()
 
   return (
     <>

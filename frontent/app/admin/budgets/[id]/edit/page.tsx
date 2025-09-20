@@ -1,24 +1,17 @@
-import getToken from "@/src/auth/token";
-import { BudgetAPIResponseSchema } from "@/src/schemas";
+import EditBudgetForm from "@/components/budgets/EditBudgetForm";
+import { getBudget } from "@/src/services/budgets";
+import { Metadata } from "next";
 import Link from "next/link";
-import { notFound } from "next/navigation";
 
-const getBudget = async (budgetId: string) => {
-  const token = getToken();
-  const url = `${process.env.API_URL}/budgets/${budgetId}`;
-  const req = await fetch(url, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
-  const json = await req.json();
-
-  if (!req.ok) {
-    notFound();
+//this function dynamically change the page title
+export async function generateMetadata({params}: {params: { id: string }}):Promise<Metadata>{
+  const budgets = await getBudget(params.id)  
+  return{
+    title:`CashTrakerd: ${budgets.name}`,
+    description:`CashTrakerd: ${budgets.name}`
   }
-  const budget = BudgetAPIResponseSchema.parse(json);
-  return budget;
-};
+}
+
 export default async function EditBudgetPage({params}: {params: { id: string }}) {
 
   const budget =await getBudget(params.id);
@@ -42,7 +35,9 @@ export default async function EditBudgetPage({params}: {params: { id: string }})
           Volver
         </Link>
       </div>
-      <div className="p-10 mt-10  shadow-lg border "></div>
+      <div className="p-10 mt-10  shadow-lg border ">
+        <EditBudgetForm budget={budget} />
+      </div>
     </>
   );
 }
