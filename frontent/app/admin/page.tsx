@@ -1,4 +1,5 @@
 import BudgetMenu from "@/components/budgets/BudgetMenu";
+import DeleteBudgetModal from "@/components/budgets/DeleteBudgetModal";
 import { getUserBudgets } from "@/src/services/budgets";
 import { formatCurrency, formatDate } from "@/src/utils";
 import { Metadata } from "next";
@@ -32,6 +33,7 @@ export default async function AdminPage() {
       </div>
 
       {budgets.length ? (
+    <>
         <ul
           role="list"
           className="divide-y divide-gray-300 border shadow-lg mt-10 "
@@ -62,6 +64,9 @@ export default async function AdminPage() {
             </li>
           ))}
         </ul>
+        <DeleteBudgetModal/>
+    
+    </>
       ) : (
         <p>
           There are not budgets

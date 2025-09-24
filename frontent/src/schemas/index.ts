@@ -49,6 +49,8 @@ export const BudgetAPIResponseSchema = z.object({
         createdAt: z.string(),
         updatedAt: z.string()
 })
+export const PasswordValidationSchema=z.string().min(1,{message:'Invalid password'})
+
 export const SuccessSchema=z.string()
 
 export const ErrorSchema=z.object({

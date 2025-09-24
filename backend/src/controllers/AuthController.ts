@@ -168,7 +168,7 @@ export class AuthController {
 
   static getUSer = async (req: Request, res: Response) => {
       const{userExist} = req
-      res.send(userExist)
+      res.json(userExist)
   };
 
   static updatePassword = async(req: Request, res: Response)=>{
@@ -190,7 +190,7 @@ export class AuthController {
       user.password = await hashPassword(new_password);
       await user.save();
 
-      res.send("The password has been updated");
+      res.json("The password has been updated");
     } catch (error) {
       // console.log(error);
       res.status(500).json({ error: "There is an error" });
@@ -212,7 +212,7 @@ export class AuthController {
         res.status(401).json({ error: error.message });
         return;
       }
-      res.send('The password is correct')
+      res.json('The password is correct')
     } catch (error) {
        // console.log(error);
        res.status(500).json({ error: "There is an error" });
