@@ -12,7 +12,8 @@ export const getBudget = cache(
     },
   });
   const json = await req.json();
-
+  console.log(json);
+  
   if (!req.ok) {
     notFound();
   }

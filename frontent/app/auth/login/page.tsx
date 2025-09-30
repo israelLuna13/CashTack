@@ -15,7 +15,7 @@ export default function LoginPage() {
         Login
       </h1>
       <p className="text-3xl font-bold text-purple-950">
-        and manage your <span className="text-amber-500">Finanzas</span>
+        and manage your <span className="text-amber-500">Finance</span>
       </p>
       <LoginForm/>
       <nav className="mt-10 flex flex-col space-y-4">

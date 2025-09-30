@@ -1,18 +1,19 @@
 "use client"
-import { Fragment } from "react"
-import Link from "next/link"
-import { Menu, MenuButton, MenuItem, MenuItems, Transition } from "@headlessui/react"
-import { EllipsisVerticalIcon } from "@heroicons/react/20/solid"
-import { Budget } from "@/src/schemas"
-import { useRouter } from "next/navigation"
+import { Fragment } from 'react'
+import { EllipsisVerticalIcon } from '@heroicons/react/20/solid'
+import { Menu, MenuButton, MenuItem, MenuItems, Transition } from '@headlessui/react'
+import { useRouter } from 'next/navigation'
+import { Expense } from '@/src/schemas'
 
-export default function BudgetMenu({budgetId}:{budgetId:Budget['id']}) {
-  const router =useRouter()
+export default function ExpenseMenu({expenseId}:{expenseId:Expense['id']}) {
+  //to help to change url
+    const router = useRouter()
+  
   return (
-    <>
+    <div className="flex shrink-0 items-center gap-x-6">
       <Menu as="div" className="relative flex-none">
         <MenuButton className="-m-2.5 block p-2.5 text-gray-500 hover:text-gray-900">
-          <span className="sr-only">Options</span>
+          <span className="sr-only">opciones</span>
           <EllipsisVerticalIcon className="h-9 w-9" aria-hidden="true" />
         </MenuButton>
         <Transition
@@ -26,34 +27,27 @@ export default function BudgetMenu({budgetId}:{budgetId:Budget['id']}) {
         >
           <MenuItems className="absolute right-0 z-10 mt-2 w-56 origin-top-right rounded-md bg-white py-2 shadow-lg ring-1 ring-gray-900/5 focus:outline-none">
             <MenuItem>
-              <Link
-                href={`/admin/budgets/${budgetId}`} 
+              <button
+                type='button'
                 className='block px-3 py-1 text-sm leading-6 text-gray-900'
+                onClick={() => router.push(location.pathname +`?showModal=true&editExpenseId=${expenseId}`)}
               >
-                See Budget
-              </Link>
-            </MenuItem>
-            <MenuItem>
-              <Link
-                href={`/admin/budgets/${budgetId}/edit`}
-                className='block px-3 py-1 text-sm leading-6 text-gray-900'
-              >
-                Update Budget
-              </Link>
+                Edit expense
+              </button>
             </MenuItem>
 
             <MenuItem>
               <button
                 type='button'
                 className='block px-3 py-1 text-sm leading-6 text-red-500'
-                onClick={ () => router.push(`?deleteBudgetId=${budgetId}`)}
+                onClick={() => {}}
               >
-                Delete budget
+                Delete expense
               </button>
             </MenuItem>
           </MenuItems>
         </Transition>
       </Menu>
-    </>
+    </div>
   )
 }
