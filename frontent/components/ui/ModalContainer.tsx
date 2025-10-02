@@ -19,11 +19,14 @@ export default function ModalContainer() {
   const router = useRouter()
   const pathname = usePathname()//current url
   const searchParams = useSearchParams()// to get params
+  //to get params from url
   const showModal=searchParams.get('showModal')
-
   const addExpense = searchParams.get("addExpense");
+  const editExpenseId = searchParams.get("editExpenseId");
+
   const getComponentName = () => {
     if (addExpense) return "AddExpense";
+    if (editExpenseId) return "EditExpense";
   };
   const componentName =getComponentName()
 
@@ -31,7 +34,7 @@ export default function ModalContainer() {
  
   const show = showModal ? true : false
 
-  //clear all url params
+  //clear all url params to close modal
   const closeModal = () => {
     const hideModal = new URLSearchParams(searchParams.toString())
     //transform to array
