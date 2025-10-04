@@ -48,7 +48,7 @@ export default async function BudgetDetailsPage({params}:{params:{id:string}}) {
                       <span className='font-bold'>{formatDate(expense.updatedAt)}</span>
                     </p>
                   </div>
-                </div>
+                </div> 
                 <ExpenseMenu expenseId= {expense.id}/>
               </li>
             ))}

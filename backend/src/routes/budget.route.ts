@@ -3,7 +3,7 @@ import { BudgetController } from "../controllers/BudgetController";
 // import { handleInputsErrors } from "../middleware/validation";
 import { HasAcces, validateBudgetExist, validateBudgetId, validateBudgetInput } from "../middleware/budget";
 import { ExpensesController } from "../controllers/ExpenseController";
-import { validateExpenseExist, validateExpenseId, validateExpenseInput } from "../middleware/expense";
+import { belongtsToBudget, validateExpenseExist, validateExpenseId, validateExpenseInput } from "../middleware/expense";
 import { handleInputsErrors } from "../middleware/validation";
 import { authenticate } from "../middleware/auth";
  const router = Router()
@@ -23,6 +23,7 @@ import { authenticate } from "../middleware/auth";
  //we add the next middleware to routes that has the id called expenseId
  router.param('expenseId',validateExpenseId)
  router.param('expenseId',validateExpenseExist)
+  router.param('expenseId',belongtsToBudget)
 
   //-----------------------------------------------------------------budget routes-----------------------------------------------------------------
 /**
