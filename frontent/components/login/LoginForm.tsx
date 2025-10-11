@@ -24,7 +24,7 @@ export default function LoginForm() {
           <input
             id="email"
             type="email"
-            placeholder="Email de Registro"
+            placeholder="Email"
             className="w-full border border-gray-300 p-3 rounded-lg"
             name="email"
           />
@@ -35,7 +35,7 @@ export default function LoginForm() {
 
           <input
             type="password"
-            placeholder="Password de Registro"
+            placeholder="Password"
             className="w-full border border-gray-300 p-3 rounded-lg"
             name="password"
           />

@@ -219,4 +219,27 @@ export class AuthController {
     }
 
   }
+
+  static updateProfile= async(req:Request,res:Response)=>{
+   const {email,name}= req.body
+   const user=req.userExist
+    try {
+       const userExist = await User.findOne({ where: { email } });
+    
+      if (userExist && userExist.id !== user.id) {
+        const error = new Error(
+          "The user already exists with that email address"
+        );
+        res.status(409).json({ error: error.message });
+        return;
+      }
+      user.name = name
+      user.email=email
+      await user.save()
+      res.json("The user has been updated")
+    } catch (error) {
+      // console.log(error);
+      res.status(500).json({ error: "There is an error" });
+    }
+  }
 }

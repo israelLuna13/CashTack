@@ -27,7 +27,7 @@ export default function AddExpenseForm({closeModal}:{closeModal:()=>void}) {
         closeModal()
     }
 
-  },[state])
+  },[state,closeModal])
   return (
     <>
       <DialogTitle as="h3" className="font-black text-4xl text-purple-950 my-5">

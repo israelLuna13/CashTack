@@ -12,7 +12,7 @@ export default function ConfirmAccountForm() {
   const [isComplete, setIsComplete] = useState(false);
   const [token, setToken] = useState("");
 
-  //the function bind make const as function
+    //we use function bind because the function useFormState does not allow passing extra params (only prevState and formData). with bind we fix token so it will always be passed to the confirmAccount function
   const confirmAccountWithToken = confirmAccount.bind(null, token);
 
   const [state, dispatch] = useFormState(confirmAccountWithToken, {
@@ -20,7 +20,8 @@ export default function ConfirmAccountForm() {
     success: "",
   });
 
-  //if the user finish  write token , it will execute the action
+//If the user finishes entering the token, the action will be executed.
+//The action is performed here because there is no form to use the action.
   useEffect(() => {
     if (isComplete) {
       dispatch();
@@ -28,13 +29,11 @@ export default function ConfirmAccountForm() {
   }, [isComplete,dispatch]);
 
   useEffect(() => {
-    //screen the issues
     if (state.errors) {
       state.errors.forEach((error) => {
         toast.error(error);
       });
     }
-    //screen the success message and redirect to login
     if (state.success) {
       toast.success(state.success, {
         onClose: () => {

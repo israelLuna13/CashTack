@@ -386,4 +386,17 @@ router.post('/update-password',authenticate
     ,body("current_password")
     .notEmpty()
     .withMessage("The password is required"),handleInputsErrors,AuthController.checkPassword)
+
+  router.put('/user',authenticate,
+    body("name")
+    .notEmpty()
+    .withMessage('The is required'),
+    body("email")
+    .notEmpty()
+    .withMessage("The email is required")
+    .isEmail()
+    .withMessage("E-mail is not valid"),
+    handleInputsErrors,
+    AuthController.updateProfile
+  )
 export default router

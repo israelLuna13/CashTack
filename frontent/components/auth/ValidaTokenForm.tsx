@@ -24,7 +24,7 @@ export default function ValidateTokenForm({setIsValidToken,token,setToken}:Valid
             dispatch()
         }
 
-    },[isComplete])
+    },[isComplete,dispatch])
 
     useEffect(()=>{
         if(state.errors){
@@ -38,12 +38,14 @@ export default function ValidateTokenForm({setIsValidToken,token,setToken}:Valid
         }
 
     },[state,setIsValidToken])
-    
+
+  //this works every time the user typer or delete a digit int he input
   const handleChange = (token: string) => {
     setIsComplete(false)
     setToken(token)
   }
 
+  //thie works only when user has filled in all digits of the input
   const handleComplete = () => {
   setIsComplete(true)  }
 

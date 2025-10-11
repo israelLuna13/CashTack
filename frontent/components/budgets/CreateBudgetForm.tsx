@@ -24,7 +24,7 @@ export default function CreateBudgetForm() {
             router.push('/admin')
         }
 
-    },[state])
+    },[state,router])
   return (
     <form
     action={dispatch}

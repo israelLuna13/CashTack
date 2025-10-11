@@ -33,7 +33,7 @@ export default function EditExpenseForm({ closeModal }: { closeModal: () => void
       toast.success(state.success);
       closeModal();
     }
-  }, [state]);
+  }, [state,closeModal]);
 
   //we to execute the route handler to execute the function to get the expenses, we can't to execute the function here cause this id client component
   useEffect(() => {
@@ -41,7 +41,7 @@ export default function EditExpenseForm({ closeModal }: { closeModal: () => void
     fetch(url)
       .then((res) => res.json())
       .then((data) => setExpense(data));
-  }, []);
+  }, [budgetId,expenseId]);
   return (
     <>
       <DialogTitle as="h3" className="font-black text-4xl text-purple-950 my-5">

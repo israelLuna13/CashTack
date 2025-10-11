@@ -64,6 +64,22 @@ export const DraftExpenseSchema =z.object({
     name:z.string().min(1,{message:'Invalid name'}),
     amount:z.coerce.number({message:'Invalid amount'}).min(1,{message:'Invalid amount'})
 })
+
+export const UpdatePasswordSchema = z.object({
+        current_password: z.string().min(1, {message: 'El Password no puede ir vacio'}),
+        password: z.string()
+                .min(8, {message: 'El Nuevo Password debe ser de al menos 8 caracteres'}),
+        password_confirmation: z.string()
+  }).refine((data) => data.password === data.password_confirmation, {
+      message: "Los Passwords no son iguales",
+      path: ["password_confirmation"]
+  });
+  export const UpdateProfileSchema = z.object({
+        name: z.string().min(1, {message: 'The name is required'}),
+        email:z.string().min(1,{message:'The email is required'}).email({message:'Invalid email'}),
+
+   
+  });
 export const SuccessSchema=z.string()
 
 export const ErrorSchema=z.object({
