@@ -28,7 +28,7 @@ const deleteExpenseWithBudgetId= deleteExpense.bind(null,{
     if(!Number.isInteger(+budgetId)|| !Number.isInteger(+expenseId)){
       closeModal()
     }
-  },[])
+  },[budgetId,closeModal,expenseId])
 
     useEffect(()=>{
       if(state.errors){
@@ -41,7 +41,7 @@ const deleteExpenseWithBudgetId= deleteExpense.bind(null,{
        closeModal()
       }
    
-  },[state])
+  },[state,closeModal])
   return (
     <>
       <DialogTitle
